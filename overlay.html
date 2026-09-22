@@ -53,9 +53,9 @@
     #combo.slam { animation: slam 520ms cubic-bezier(.12,.82,.16,1.04) both; }
     #combo.rehit { animation: rehit 360ms cubic-bezier(.22,.85,.3,1.18) both; }
     #combo.slam::before { animation: flash 250ms ease-out both; }
-    #combo.shake { animation-name: slam, shake; animation-duration: 520ms, 360ms; animation-timing-function: cubic-bezier(.12,.82,.16,1.04), linear; }
+    #combo.shake { animation-name: slam, shake; animation-duration: 520ms, 420ms; animation-timing-function: cubic-bezier(.12,.82,.16,1.04), ease-in-out; }
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
-    #combo.glitch .combo-card { animation: glitch-frame 340ms steps(2, end) both; }
+    #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -137,13 +137,13 @@
     @keyframes sakura-card-exit { 45% { transform: rotate(-2deg); } 100% { transform: translate(38px, -54px) rotate(11deg) scale(.75); filter: blur(2px); } }
     @keyframes petal-exit { 35% { opacity: 1; } 100% { opacity: 0; transform: translate(90px, -80px) rotate(28deg) scale(1.5); } }
     @keyframes tsunami-exit { 0%, 35% { opacity: 1; } 100% { opacity: 0; transform: translateX(-115px) scaleX(.68); } }
-    @keyframes tsunami-card-exit { 35% { transform: translateX(14px) skewX(-3deg); } 100% { transform: translate(-128px, 42px) skewX(-13deg) scaleY(.3); clip-path: inset(80% 0 0 0); } }
+    @keyframes tsunami-card-exit { 35% { transform: translateX(12px) skewX(-2deg); } 100% { transform: translate(-96px, 34px) skewX(-5deg) scale(.72); filter: blur(2px); } }
     @keyframes wave-exit { 100% { opacity: 0; transform: translateX(-180px) scaleX(1.6); } }
     @keyframes inferno-exit { 0%, 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-95px) scale(.72); filter: brightness(1.8) blur(5px); } }
-    @keyframes inferno-card-exit { 55% { filter: brightness(1.8) saturate(1.9); } 100% { transform: translateY(-112px) scale(.5) skewX(-8deg); filter: brightness(2.7) blur(6px); clip-path: polygon(12% 100%, 23% 17%, 37% 66%, 51% 0, 64% 73%, 83% 18%, 94% 100%); } }
+    @keyframes inferno-card-exit { 55% { filter: brightness(1.55) saturate(1.45); } 100% { transform: translateY(-92px) scale(.64) skewX(-4deg); filter: brightness(2) blur(4px); } }
     @keyframes flame-exit { 100% { opacity: 0; transform: translateY(-155px) scaleX(.55); filter: blur(8px); } }
     @keyframes luna-exit { 0%, 45% { opacity: 1; } 100% { opacity: 0; transform: scale(.08); filter: blur(2px); } }
-    @keyframes luna-card-exit { 45% { transform: scale(.96); } 100% { transform: scale(.06) rotate(180deg); filter: brightness(2.5) blur(4px); } }
+    @keyframes luna-card-exit { 45% { transform: scale(.96); } 100% { transform: scale(.16) rotate(35deg); filter: brightness(1.9) blur(3px); } }
     @keyframes star-exit { 50% { opacity: 1; } 100% { opacity: 0; transform: scale(3.4) rotate(60deg); filter: blur(2px); } }
     .combo-card {
       position: relative;
@@ -251,7 +251,7 @@
     }
     @keyframes rehit {
       0% { transform: scale(1); filter: brightness(1); }
-      42% { transform: scale(1.075); filter: brightness(1.32); }
+      48% { transform: scale(1.045); filter: brightness(1.16); }
       100% { transform: scale(1); filter: brightness(1); }
     }
     @keyframes shake {
@@ -260,23 +260,21 @@
     @keyframes flash { 0% { opacity: .9; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.2); } }
     @keyframes glitch-frame {
       0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-11px); }
-      50% { transform: translateX(9px); }
-      75% { transform: translateX(-4px); }
+      30% { transform: translateX(-6px); }
+      60% { transform: translateX(5px); }
+      82% { transform: translateX(-2px); }
     }
     @keyframes exit {
       0%, 68% { opacity: 1; transform: translateY(0) scale(1); }
       100% { opacity: 0; transform: translateY(70px) scale(.54) rotate(4deg); filter: blur(7px) drop-shadow(0 0 0 transparent); }
     }
     @keyframes crumble {
-      0% { clip-path: polygon(3% 0,100% 0,97% 100%,0 100%); filter: none; }
-      38% { transform: translate(-6px, 6px) rotate(-1deg); clip-path: polygon(3% 0,100% 0,97% 75%,87% 100%,66% 77%,51% 100%,34% 76%,16% 100%,0 78%); }
-      72% { transform: translate(13px, 30px) rotate(2.5deg); clip-path: polygon(9% 0,93% 0,100% 49%,78% 72%,64% 44%,44% 86%,23% 45%,3% 75%); filter: saturate(1.8) contrast(1.3); }
-      100% { transform: translate(-30px, 105px) rotate(-8deg); clip-path: polygon(20% 15%,87% 0,100% 47%,68% 70%,42% 38%,17% 90%,0 54%); filter: blur(5px) saturate(2); }
+      0% { transform: translateY(0) rotate(0); filter: none; }
+      44% { transform: translate(-3px, 7px) rotate(-.7deg); filter: saturate(1.15); }
+      100% { transform: translate(12px, 70px) rotate(4deg) scale(.72); filter: blur(4px) saturate(1.45); }
     }
     @keyframes debris { 0%, 45% { opacity: .8; transform: scale(.55); } 100% { opacity: 0; transform: translateY(108px) scale(1.95) rotate(13deg); } }
     @keyframes fragments { 0%, 35% { opacity: 0; } 55% { opacity: .85; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-44px, 92px) rotate(-11deg) scale(1.4); } }
-    }
   </style>
 </head>
 <body>

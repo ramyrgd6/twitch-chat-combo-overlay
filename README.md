@@ -56,3 +56,7 @@ Native Twitch emotes are rendered as their actual emote images in the overlay. T
 Each message has its own short-lived combo record. When a repeat reaches `MIN_COMBO_COUNT`, the server sends an event to the overlay; the newest event is the one shown. Expired records are removed automatically.
 
 Customize the visual palette, fonts, sizes, and placement through the CSS variables at the top of `overlay.html`. Edit `intensityFor()` there to change the x5, x10, x25, and x50 milestone effects.
+
+## Development note
+
+This project was built with the help of AI-assisted tools and is shared as an experimental, “vibecoded” project. Please review the code before using it in your own setup, and feel free to fork, adapt, or ignore it as you prefer.

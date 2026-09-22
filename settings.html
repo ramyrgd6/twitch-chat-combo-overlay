@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combo Overlay Control Room</title>
+  <style>
+    :root { color-scheme: dark; --bg: #0b0d17; --panel: #151827; --muted: #9298b4; --text: #f7f8ff; }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; background: radial-gradient(circle at 80% 0, #24336a 0, transparent 36%), var(--bg); color: var(--text); font: 16px/1.45 Inter, ui-sans-serif, system-ui, sans-serif; }
+    main { width: min(1000px, calc(100% - 40px)); margin: 0 auto; padding: 64px 0; }
+    .eyebrow { color: #55ddff; font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 7px 0 9px; font-size: clamp(34px, 6vw, 62px); letter-spacing: -.055em; line-height: .95; }
+    .lead { max-width: 620px; margin: 0; color: var(--muted); }
+    h2 { margin: 54px 0 16px; font-size: 18px; }
+    .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; }
+    .theme { min-height: 160px; padding: 18px; border: 2px solid transparent; border-radius: 18px; color: inherit; text-align: left; cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .theme:hover { transform: translateY(-4px); }
+    .theme.selected { border-color: white; box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme) 35%, transparent), 0 14px 28px rgba(0,0,0,.26); }
+    .theme span { display: block; margin-top: 44px; color: rgba(255,255,255,.72); font-size: 13px; }
+    .theme strong { font-size: 24px; letter-spacing: -.04em; }
+    .game { --theme: #ffd23f; background: linear-gradient(145deg, #30354b, #10111a 65%); border-bottom: 5px solid var(--theme); }
+    .sakura { --theme: #ff82bd; background: linear-gradient(145deg, #71355f, #2d112a 65%); border-bottom: 5px solid var(--theme); }
+    .tsunami { --theme: #34dfff; background: linear-gradient(145deg, #17688a, #071d3b 65%); border-bottom: 5px solid var(--theme); }
+    .inferno { --theme: #ff7138; background: linear-gradient(145deg, #8a2b23, #2e0d0f 65%); border-bottom: 5px solid var(--theme); }
+    .luna { --theme: #d9dcff; background: linear-gradient(145deg, #57528f, #171833 65%); border-bottom: 5px solid var(--theme); }
+    .footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-top: 46px; padding-top: 24px; border-top: 1px solid #292d40; color: var(--muted); }
+    code { padding: 3px 6px; border-radius: 5px; background: #23283b; color: #f5f7ff; }
+    #saved { color: #69efab; font-weight: 700; opacity: 0; transition: opacity .2s; }
+    #saved.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Twitch Chat Combo</div>
+    <h1>Control Room</h1>
+    <p class="lead">Choose an overlay mood. Your choice saves locally and updates every connected OBS browser source instantly.</p>
+
+    <h2>Choose your theme</h2>
+    <section class="themes" aria-label="Overlay themes">
+      <button class="theme game" data-theme="game"><strong>Game</strong><span>Arcade gold · the original</span></button>
+      <button class="theme sakura" data-theme="sakura"><strong>Sakura</strong><span>Falling petals · glass frame</span></button>
+      <button class="theme tsunami" data-theme="tsunami"><strong>Tsunami</strong><span>Curling waves · waterline frame</span></button>
+      <button class="theme inferno" data-theme="inferno"><strong>Inferno</strong><span>Rising flames · charred frame</span></button>
+      <button class="theme luna" data-theme="luna"><strong>Luna</strong><span>Crescent moon · orbiting stars</span></button>
+    </section>
+
+    <div class="footer">
+      <span id="saved" role="status">Theme saved — OBS updated.</span>
+      <span>OBS URL: <code>/overlay.html</code> · Preview: <code>?preview=1</code></span>
+    </div>
+  </main>
+  <script>
+    const cards = [...document.querySelectorAll('.theme')];
+    const saved = document.querySelector('#saved');
+
+    function select(theme) {
+      cards.forEach(card => card.classList.toggle('selected', card.dataset.theme === theme));
+    }
+    async function save(theme) {
+      const response = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ theme }) });
+      if (!response.ok) throw new Error('Could not save settings');
+      select(theme);
+      saved.classList.add('visible');
+      setTimeout(() => saved.classList.remove('visible'), 2200);
+    }
+    cards.forEach(card => card.addEventListener('click', () => save(card.dataset.theme).catch(error => alert(error.message))));
+    fetch('/api/settings').then(response => response.json()).then(settings => select(settings.theme)).catch(() => select('game'));
+  </script>
+</body>
+</html>

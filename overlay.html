@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twitch Chat Combo Overlay</title>
+  <style>
+    :root {
+      /* Customize your overlay's palette and layout here. */
+      --accent: #ffd23f;
+      --accent-hot: #ff4d6d;
+      --count-color: #45f28c;
+      --ink: #10111a;
+      --panel: rgba(10, 14, 25, .76);
+      --panel-edge: rgba(255, 255, 255, .34);
+      --font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      --message-size: clamp(68px, 9vw, 168px);
+      --count-size: clamp(38px, 4.6vw, 78px);
+      --bottom-offset: 7vh;
+    }
+    :root[data-theme="sakura"] {
+      --accent: #ff82bd; --accent-hot: #ff3b8d; --panel: rgba(49, 13, 43, .73); --panel-edge: rgba(255, 208, 236, .5); --ink: #250d24;
+    }
+    :root[data-theme="tsunami"] {
+      --accent: #34dfff; --accent-hot: #247cff; --panel: rgba(5, 28, 54, .74); --panel-edge: rgba(183, 248, 255, .5); --ink: #061827;
+    }
+    :root[data-theme="inferno"] {
+      --accent: #ff9a34; --accent-hot: #ff304f; --panel: rgba(54, 13, 12, .77); --panel-edge: rgba(255, 211, 135, .5); --ink: #250809;
+    }
+    :root[data-theme="luna"] {
+      --accent: #d9dcff; --accent-hot: #ae8cff; --panel: rgba(17, 19, 51, .76); --panel-edge: rgba(230, 234, 255, .5); --ink: #0c0d28;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
+    /* The source now sits in the true center of the OBS canvas. */
+    body { display: grid; place-items: center; padding: 0 4vw; }
+
+    #combo {
+      --power: 1;
+      --combo-color: var(--accent);
+      position: relative;
+      display: grid;
+      justify-items: center;
+      max-width: 92vw;
+      isolation: isolate;
+      opacity: 0;
+      transform: translateY(22px) scale(.82);
+      filter: drop-shadow(0 13px 0 rgba(0, 0, 0, .45));
+      pointer-events: none;
+    }
+    #combo.visible { opacity: 1; }
+    #combo.slam { animation: slam 520ms cubic-bezier(.12,.82,.16,1.04) both; }
+    #combo.rehit { animation: rehit 360ms cubic-bezier(.22,.85,.3,1.18) both; }
+    #combo.slam::before { animation: flash 250ms ease-out both; }
+    #combo.shake { animation-name: slam, shake; animation-duration: 520ms, 360ms; animation-timing-function: cubic-bezier(.12,.82,.16,1.04), linear; }
+    #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    #combo.glitch .combo-card { animation: glitch-frame 340ms steps(2, end) both; }
+    #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    #combo.hiding::before { animation: debris 1050ms ease-out both; }
+    #combo::before {
+      content: "";
+      position: absolute;
+      inset: -70px -90px;
+      z-index: -1;
+      background: radial-gradient(ellipse, color-mix(in srgb, var(--combo-color) 58%, transparent), transparent 68%);
+      opacity: 0;
+    }
+    .theme-fx { position: absolute; inset: -115px -110px; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease; }
+    .theme-fx i { position: absolute; display: block; }
+
+    /* Sakura: a soft glass card and drifting cherry-blossom petals. */
+    :root[data-theme="sakura"] .theme-fx { opacity: 1; }
+    :root[data-theme="sakura"] .combo-card { border-radius: 48px 10px 48px 10px; clip-path: none; background: linear-gradient(115deg, #fff5fa 0%, #ffd0e5 45%, #f88fbe 100%); border: 4px solid white; border-bottom: 7px solid #d73a83; box-shadow: 0 12px 0 #8d285b, 0 0 30px #ff9acb; }
+    :root[data-theme="sakura"] #message { color: #8d2257; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #ffd3e5; }
+    :root[data-theme="sakura"] .label { color: white; background: #d73a83; border-color: white; box-shadow: 3px 3px 0 #8d285b; }
+    :root[data-theme="sakura"] .message-wrap { border-color: rgba(141,34,87,.2); }
+    :root[data-theme="sakura"] .theme-fx .fx-a { width: 30px; height: 21px; top: 0; left: 2%; border-radius: 90% 10% 90% 10%; background: #ff68ad; transform: rotate(-32deg); box-shadow: 90px 72px #ffc2df, 194px -13px #ff83bd, 300px 95px #ffd2e9, 415px 20px #ff8fc4, 535px 79px #ffc2df; animation: petals 4.5s linear infinite; }
+    :root[data-theme="sakura"] .theme-fx .fx-b { width: 23px; height: 31px; top: 67px; right: 0; border-radius: 90% 10% 90% 10%; background: #ffd4e8; transform: rotate(48deg); box-shadow: -82px 68px #ff85be, -186px -34px #ffc4e0, -315px 61px #ff9dcc, -434px -48px #ffe0ef; animation: petals 5.6s -1.4s linear infinite reverse; }
+
+    /* Tsunami: a rounded waterline panel with bright curling waves. */
+    :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
+    :root[data-theme="tsunami"] .combo-card { border-radius: 40px 40px 22px 22px; clip-path: polygon(0 13%, 5% 3%, 14% 10%, 25% 0, 37% 8%, 49% 2%, 61% 10%, 75% 0, 88% 8%, 100% 3%, 100% 100%, 0 100%); background: linear-gradient(180deg, #b9f7ff 0%, #43d9fa 46%, #096fcb 100%); border: 4px solid #edffff; border-bottom: 8px solid #0752a4; box-shadow: 0 12px 0 #043d78, 0 0 28px #42e7ff; }
+    :root[data-theme="tsunami"] #message { color: #083e7a; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #79ecff; }
+    :root[data-theme="tsunami"] .label { color: #053b71; background: #d8fbff; border-color: #087cd0; box-shadow: 3px 3px 0 #0752a4; }
+    :root[data-theme="tsunami"] .message-wrap { border-color: rgba(5,81,164,.28); }
+    :root[data-theme="tsunami"] .theme-fx .fx-a { width: 240px; height: 92px; bottom: 0; left: 0; border: 9px solid #3ae8ff; border-color: #3ae8ff transparent transparent #3ae8ff; border-radius: 70% 0 0; transform: rotate(12deg); box-shadow: 180px 7px 0 -4px #78f5ff, 365px -18px 0 -5px #259eff; animation: waves 2.8s ease-in-out infinite; }
+    :root[data-theme="tsunami"] .theme-fx .fx-b { width: 155px; height: 55px; right: 4%; top: 18px; border: 6px solid #9af8ff; border-color: #9af8ff #9af8ff transparent transparent; border-radius: 0 80% 0 0; transform: rotate(-16deg); animation: waves 2.3s .5s ease-in-out infinite reverse; }
+
+    /* Inferno: jagged heat shards rising behind a charred red panel. */
+    :root[data-theme="inferno"] .theme-fx { opacity: 1; }
+    :root[data-theme="inferno"] .combo-card { clip-path: polygon(0 8%, 8% 0, 19% 7%, 30% 0, 43% 6%, 58% 0, 72% 8%, 85% 0, 100% 6%, 100% 100%, 0 100%); background: radial-gradient(circle at 50% -20%, #ffdd52, #ff6a24 39%, #9f151d 73%, #30080c 100%); border: 3px solid #ffcc42; border-bottom: 9px solid #59100e; box-shadow: 0 13px 0 #260609, 0 0 32px #ff592a; }
+    :root[data-theme="inferno"] #message { color: #fff5ca; -webkit-text-stroke: 3px #6e1010; text-shadow: 3px 4px 0 #3a0909; }
+    :root[data-theme="inferno"] .label { color: #fff6c4; background: #9e1419; border-color: #ffcd3e; box-shadow: 3px 3px 0 #390707; }
+    :root[data-theme="inferno"] .message-wrap { border-color: rgba(255,234,130,.35); }
+    :root[data-theme="inferno"] .theme-fx .fx-a { width: 165px; height: 150px; bottom: -12px; left: 8%; background: linear-gradient(to top, #ff2f28, #ff8a24 58%, #ffe053); clip-path: polygon(5% 100%, 20% 51%, 28% 73%, 43% 10%, 54% 61%, 69% 32%, 75% 70%, 94% 0, 100% 100%); filter: drop-shadow(0 0 15px #ff4c27); animation: flames 1.25s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .theme-fx .fx-b { width: 120px; height: 115px; bottom: -8px; right: 10%; background: linear-gradient(to top, #ff4d2c, #ffbd2d); clip-path: polygon(0 100%, 20% 33%, 34% 65%, 52% 0, 68% 56%, 83% 26%, 100% 100%); filter: drop-shadow(0 0 13px #ff681e); animation: flames 1.05s .25s ease-in-out infinite alternate-reverse; }
+
+    /* Luna: a midnight capsule with a crescent moon and orbiting stars. */
+    :root[data-theme="luna"] .theme-fx { opacity: 1; }
+    :root[data-theme="luna"] .combo-card { border-radius: 54px; clip-path: none; background: radial-gradient(circle at 17% 20%, #7980be 0%, transparent 28%), radial-gradient(circle at 80% 100%, #553e9c, transparent 42%), #171a4d; border: 3px solid #e4e7ff; border-bottom: 7px solid #7774c5; box-shadow: 0 12px 0 #0a0b28, 0 0 30px #a89cff; }
+    :root[data-theme="luna"] #message { color: #f4f4ff; -webkit-text-stroke: 3px #26265f; text-shadow: 3px 4px 0 #101035; }
+    :root[data-theme="luna"] .label { color: #24255e; background: #e9ebff; border-color: #aaa9ef; box-shadow: 3px 3px 0 #12123c; }
+    :root[data-theme="luna"] .message-wrap { border-color: rgba(225,228,255,.25); }
+    :root[data-theme="luna"] .theme-fx .fx-a { width: 90px; height: 90px; top: -8px; left: 6%; border-radius: 50%; background: #eef0ff; box-shadow: inset -24px -5px 0 #55518c, 175px 15px 0 -42px #fff, 255px 60px 0 -43px #d8ddff, 410px -5px 0 -44px #fff, 526px 50px 0 -43px #d8ddff; filter: drop-shadow(0 0 16px #b8bfff); animation: lunar 4.5s ease-in-out infinite; }
+    :root[data-theme="luna"] .theme-fx .fx-b { width: 5px; height: 5px; top: 34px; right: 12%; border-radius: 50%; background: white; box-shadow: -65px 40px #c5c8ff, -150px -22px #fff, -245px 52px #b8c7ff, -335px -10px #fff; animation: twinkle 1.6s ease-in-out infinite alternate; }
+
+
+    @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); } 100% { transform: translate(30px,78px) rotate(110deg); } }
+    @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
+    @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
+    @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
+    @keyframes twinkle { to { transform: scale(2.2); opacity: .35; } }
+
+    /* Theme-specific exits: each one replaces the generic crumble. */
+    :root[data-theme="sakura"] #combo.hiding { animation: sakura-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="sakura"] #combo.hiding .combo-card { animation: sakura-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="sakura"] #combo.hiding .theme-fx { animation: petal-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="sakura"] #combo.hiding::before, :root[data-theme="sakura"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+
+    :root[data-theme="tsunami"] #combo.hiding { animation: tsunami-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="tsunami"] #combo.hiding .combo-card { animation: tsunami-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="tsunami"] #combo.hiding .theme-fx { animation: wave-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="tsunami"] #combo.hiding::before, :root[data-theme="tsunami"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+
+    :root[data-theme="inferno"] #combo.hiding { animation: inferno-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="inferno"] #combo.hiding .combo-card { animation: inferno-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="inferno"] #combo.hiding .theme-fx { animation: flame-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="inferno"] #combo.hiding::before, :root[data-theme="inferno"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+
+    :root[data-theme="luna"] #combo.hiding { animation: luna-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="luna"] #combo.hiding .combo-card { animation: luna-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="luna"] #combo.hiding .theme-fx { animation: star-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="luna"] #combo.hiding::before, :root[data-theme="luna"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+
+    @keyframes sakura-exit { 0%, 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-68px) rotate(6deg); } }
+    @keyframes sakura-card-exit { 45% { transform: rotate(-2deg); } 100% { transform: translate(38px, -54px) rotate(11deg) scale(.75); filter: blur(2px); } }
+    @keyframes petal-exit { 35% { opacity: 1; } 100% { opacity: 0; transform: translate(90px, -80px) rotate(28deg) scale(1.5); } }
+    @keyframes tsunami-exit { 0%, 35% { opacity: 1; } 100% { opacity: 0; transform: translateX(-115px) scaleX(.68); } }
+    @keyframes tsunami-card-exit { 35% { transform: translateX(14px) skewX(-3deg); } 100% { transform: translate(-128px, 42px) skewX(-13deg) scaleY(.3); clip-path: inset(80% 0 0 0); } }
+    @keyframes wave-exit { 100% { opacity: 0; transform: translateX(-180px) scaleX(1.6); } }
+    @keyframes inferno-exit { 0%, 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-95px) scale(.72); filter: brightness(1.8) blur(5px); } }
+    @keyframes inferno-card-exit { 55% { filter: brightness(1.8) saturate(1.9); } 100% { transform: translateY(-112px) scale(.5) skewX(-8deg); filter: brightness(2.7) blur(6px); clip-path: polygon(12% 100%, 23% 17%, 37% 66%, 51% 0, 64% 73%, 83% 18%, 94% 100%); } }
+    @keyframes flame-exit { 100% { opacity: 0; transform: translateY(-155px) scaleX(.55); filter: blur(8px); } }
+    @keyframes luna-exit { 0%, 45% { opacity: 1; } 100% { opacity: 0; transform: scale(.08); filter: blur(2px); } }
+    @keyframes luna-card-exit { 45% { transform: scale(.96); } 100% { transform: scale(.06) rotate(180deg); filter: brightness(2.5) blur(4px); } }
+    @keyframes star-exit { 50% { opacity: 1; } 100% { opacity: 0; transform: scale(3.4) rotate(60deg); filter: blur(2px); } }
+    .combo-card {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      min-width: min(560px, 82vw);
+      padding: 15px clamp(28px, 4vw, 58px) 15px;
+      background:
+        repeating-linear-gradient(135deg, transparent 0 15px, rgba(255,255,255,.035) 15px 16px),
+        linear-gradient(90deg, var(--combo-color) 0 8px, transparent 8px),
+        linear-gradient(135deg, rgba(255,255,255,.13), transparent 33%),
+        var(--panel);
+      border: 2px solid var(--panel-edge);
+      border-bottom: 4px solid var(--combo-color);
+      clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+      box-shadow: inset 0 1px rgba(255,255,255,.22), inset 0 -18px 30px rgba(0,0,0,.24), 0 0 22px color-mix(in srgb, var(--combo-color) 28%, transparent);
+      backdrop-filter: blur(7px);
+    }
+    .combo-card::after {
+      content: "";
+      position: absolute;
+      right: 21px;
+      top: 18px;
+      width: 36px;
+      height: 3px;
+      background: var(--combo-color);
+      box-shadow: 8px 8px 0 rgba(255,255,255,.25), 16px 16px 0 rgba(255,255,255,.12);
+    }
+    .combo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(120deg, transparent 0 19%, var(--combo-color) 20% 24%, transparent 25% 49%, rgba(255,255,255,.75) 50% 53%, transparent 54% 78%, var(--combo-color) 79% 83%, transparent 84%);
+    }
+    #combo.hiding .combo-card::before { animation: fragments 1050ms ease-out both; }
+    .label {
+      position: relative;
+      z-index: 1;
+      justify-self: start;
+      /* Align the tag tightly with the frame's left angled edge. */
+      margin: -4px auto 13px 7px;
+      padding: 9px 18px 8px;
+      color: var(--ink);
+      background: var(--combo-color);
+      border: 2px solid rgba(255,255,255,.78);
+      box-shadow: 3px 3px 0 var(--ink);
+      font: 900 clamp(20px, 2.1vw, 30px)/1 Arial, sans-serif;
+      letter-spacing: .12em;
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    }
+    .message-wrap {
+      width: 100%;
+      min-height: clamp(66px, 8vw, 128px);
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      border-top: 1px solid rgba(255,255,255,.12);
+      border-bottom: 1px solid rgba(255,255,255,.09);
+    }
+    #message {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      text-align: center;
+      color: #fff;
+      font: 900 var(--message-size)/.92 var(--font);
+      letter-spacing: .015em;
+      text-transform: uppercase;
+      -webkit-text-stroke: 4px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 3px 4px 0 rgba(0, 0, 0, .8), 0 0 14px color-mix(in srgb, var(--combo-color) 30%, transparent);
+    }
+    #message .emote {
+      height: 1.18em;
+      width: auto;
+      max-width: 3.4em;
+      vertical-align: -.12em;
+      object-fit: contain;
+      /* Emotes keep the same sharp outlined, arcade-style treatment. */
+      filter: drop-shadow(3px 3px 0 var(--ink)) drop-shadow(0 0 8px rgba(255,255,255,.18));
+    }
+    #count {
+      position: relative;
+      z-index: 1;
+      margin: 9px -34px -33px auto;
+      padding: 7px 15px 8px;
+      color: var(--count-color);
+      background: var(--ink);
+      font: 900 calc(var(--count-size) * var(--power))/ .8 var(--font);
+      letter-spacing: -.04em;
+      -webkit-text-stroke: 3px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 2px 3px 0 rgba(0, 0, 0, .65);
+      box-shadow: 0 4px 0 var(--count-color), 0 0 18px color-mix(in srgb, var(--count-color) 52%, transparent);
+    }
+    .milestone #count { color: var(--count-color); box-shadow: 0 4px 0 var(--count-color), 0 0 22px color-mix(in srgb, var(--count-color) 65%, transparent); }
+
+    @keyframes slam {
+      0% { opacity: 0; transform: translateX(-180px) skewX(-9deg); }
+      38% { opacity: 1; transform: translateX(18px) skewX(3deg); }
+      64% { transform: translateX(-7px) skewX(-1deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+    @keyframes rehit {
+      0% { transform: scale(1); filter: brightness(1); }
+      42% { transform: scale(1.075); filter: brightness(1.32); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+    @keyframes shake {
+      0%,100% { margin-left: 0; } 20% { margin-left: calc(-11px * var(--power)); } 40% { margin-left: calc(11px * var(--power)); } 60% { margin-left: calc(-6px * var(--power)); } 80% { margin-left: calc(6px * var(--power)); }
+    }
+    @keyframes flash { 0% { opacity: .9; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.2); } }
+    @keyframes glitch-frame {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-11px); }
+      50% { transform: translateX(9px); }
+      75% { transform: translateX(-4px); }
+    }
+    @keyframes exit {
+      0%, 68% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(70px) scale(.54) rotate(4deg); filter: blur(7px) drop-shadow(0 0 0 transparent); }
+    }
+    @keyframes crumble {
+      0% { clip-path: polygon(3% 0,100% 0,97% 100%,0 100%); filter: none; }
+      38% { transform: translate(-6px, 6px) rotate(-1deg); clip-path: polygon(3% 0,100% 0,97% 75%,87% 100%,66% 77%,51% 100%,34% 76%,16% 100%,0 78%); }
+      72% { transform: translate(13px, 30px) rotate(2.5deg); clip-path: polygon(9% 0,93% 0,100% 49%,78% 72%,64% 44%,44% 86%,23% 45%,3% 75%); filter: saturate(1.8) contrast(1.3); }
+      100% { transform: translate(-30px, 105px) rotate(-8deg); clip-path: polygon(20% 15%,87% 0,100% 47%,68% 70%,42% 38%,17% 90%,0 54%); filter: blur(5px) saturate(2); }
+    }
+    @keyframes debris { 0%, 45% { opacity: .8; transform: scale(.55); } 100% { opacity: 0; transform: translateY(108px) scale(1.95) rotate(13deg); } }
+    @keyframes fragments { 0%, 35% { opacity: 0; } 55% { opacity: .85; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-44px, 92px) rotate(-11deg) scale(1.4); } }
+    }
+  </style>
+</head>
+<body>
+  <main id="combo" aria-live="polite">
+    <div class="theme-fx" aria-hidden="true"><i class="fx-a"></i><i class="fx-b"></i></div>
+    <section class="combo-card">
+      <div class="label">CHAT COMBO</div>
+      <div class="message-wrap"><div id="message"></div></div>
+      <div id="count"></div>
+    </section>
+  </main>
+  <script>
+    // These must match the backend's defaults unless you add settings via URL.
+    const options = new URLSearchParams(location.search);
+    const timeoutMs = Number(options.get('timeout')) || 6500;
+    const combo = document.querySelector('#combo');
+    const message = document.querySelector('#message');
+    const count = document.querySelector('#count');
+    let hideTimer;
+    let glitchTimer;
+    let rehitTimer;
+    const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
+    const colorRamps = {
+      game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
+      sakura: ['#ffaad5', '#ff76b7', '#d978ff', '#ff8c8c', '#ff3d80'],
+      tsunami: ['#48f2bd', '#34dfff', '#378cff', '#766aff', '#c456ff'],
+      inferno: ['#ffe04d', '#ffb32c', '#ff792e', '#ff4c32', '#ff244e'],
+      luna: ['#d9dcff', '#91c9ff', '#a58bff', '#d977ff', '#ff70bd']
+    };
+    let currentTheme = 'game';
+
+    function applyTheme(theme) {
+      currentTheme = validThemes.has(theme) ? theme : 'game';
+      document.documentElement.dataset.theme = currentTheme;
+      combo.style.setProperty('--combo-color', colorRamps[currentTheme][0]);
+      combo.style.setProperty('--count-color', colorRamps[currentTheme][0]);
+    }
+
+    function renderMessage(text, emotes = {}) {
+      // Twitch's emote ranges use JavaScript string offsets (inclusive end).
+      // Build DOM nodes rather than injecting chat content as HTML.
+      const ranges = Object.entries(emotes).flatMap(([id, positions]) =>
+        positions.map(position => {
+          const [start, end] = position.split('-').map(Number);
+          return { id, start, end };
+        })
+      ).sort((a, b) => a.start - b.start);
+
+      message.replaceChildren();
+      let cursor = 0;
+      for (const range of ranges) {
+        if (range.start < cursor || range.end < range.start) continue;
+        message.append(document.createTextNode(text.slice(cursor, range.start)));
+        const image = new Image();
+        image.className = 'emote';
+        image.alt = text.slice(range.start, range.end + 1);
+        image.src = `https://static-cdn.jtvnw.net/emoticons/v2/${range.id}/default/dark/3.0`;
+        message.append(image);
+        cursor = range.end + 1;
+      }
+      message.append(document.createTextNode(text.slice(cursor)));
+    }
+
+    function intensityFor(value) {
+      // Add or edit milestones to tune size, hot color, and screen shake.
+      const colors = colorRamps[currentTheme];
+      if (value >= 50) return { power: 1.35, milestone: true, shake: true, color: colors[4] };
+      if (value >= 25) return { power: 1.22, milestone: true, shake: true, color: colors[3] };
+      if (value >= 10) return { power: 1.12, milestone: true, shake: true, color: colors[2] };
+      if (value >= 5) return { power: 1.04, milestone: true, shake: true, color: colors[1] };
+      return { power: 1, milestone: false, shake: false, color: colors[0] };
+    }
+
+    function showCombo(event) {
+      const wasVisible = combo.classList.contains('visible') && !combo.classList.contains('hiding');
+      const intensity = intensityFor(event.count);
+      renderMessage(event.message, event.emotes);
+      count.textContent = `x${event.count}`;
+      combo.style.setProperty('--power', intensity.power);
+      combo.style.setProperty('--combo-color', intensity.color);
+      combo.style.setProperty('--count-color', intensity.color);
+      combo.classList.toggle('milestone', intensity.milestone);
+      combo.classList.remove('hiding', 'glitch', 'slam', 'shake', 'rehit');
+      void combo.offsetWidth; // restart CSS animations for every incoming repeat
+      combo.classList.add('visible');
+      if (wasVisible) {
+        combo.classList.add('rehit');
+        clearTimeout(rehitTimer);
+        rehitTimer = setTimeout(() => combo.classList.remove('rehit'), 380);
+      } else {
+        combo.classList.add('glitch', 'slam');
+        if (intensity.shake) combo.classList.add('shake');
+      }
+
+      clearTimeout(glitchTimer);
+      glitchTimer = setTimeout(() => combo.classList.remove('glitch'), 350);
+
+      clearTimeout(hideTimer);
+      // Use the server's real setting so the display always expires in sync.
+      hideTimer = setTimeout(hideCombo, event.timeoutMs || timeoutMs);
+    }
+
+    function hideCombo() {
+      // The slam animation uses a filled final frame, so it must be removed
+      // before the exit animation or its opacity would remain pinned at 1.
+      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'rehit');
+      clearTimeout(glitchTimer);
+      clearTimeout(rehitTimer);
+      combo.classList.add('hiding');
+      setTimeout(() => combo.classList.remove('hiding'), 1100);
+    }
+
+    function connect() {
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const socket = new WebSocket(`${protocol}//${location.host}/ws`);
+      socket.addEventListener('message', ({ data }) => {
+        const event = JSON.parse(data);
+        if (event.type === 'combo') showCombo(event);
+        if (event.type === 'settings') applyTheme(event.settings.theme);
+      });
+      socket.addEventListener('close', () => setTimeout(connect, 2000));
+      socket.addEventListener('error', () => socket.close());
+    }
+    connect();
+    fetch('/api/settings').then(response => response.json()).then(settings => applyTheme(settings.theme)).catch(() => {});
+
+    // Add ?preview=1 to the browser-source URL to verify the visual design
+    // without sending chat messages. Remove it when you are ready to go live.
+    if (options.get('preview') === '1') {
+      let previewCount = 2;
+      const preview = () => {
+        showCombo({ message: 'HYPE', count: previewCount++, emotes: {}, timeoutMs: 3000 });
+        if (previewCount > 10) previewCount = 2;
+      };
+      preview();
+      setInterval(preview, 3800);
+    }
+  </script>
+</body>
+</html>

@@ -4,9 +4,9 @@ An OBS browser-source overlay that turns repeated Twitch chat messages into a pu
 
 ## Preview
 
-![Twitch chat combo overlay running in OBS](media/obs-overlay-preview.png)
+![Animated combo overlay demo](media/combo-overlay-demo.gif)
 
-[Watch the combo overlay demo video](media/combo-overlay-demo.webm)
+![Twitch chat combo overlay running in OBS](media/obs-overlay-preview.png)
 
 ### Control Room
 

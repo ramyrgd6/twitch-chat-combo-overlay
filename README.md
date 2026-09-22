@@ -2,6 +2,16 @@
 
 An OBS browser-source overlay that turns repeated Twitch chat messages into a punchy fighting-game-style combo counter. It runs locally, needs no database, and displays only the most recently repeated active message.
 
+## Preview
+
+![Twitch chat combo overlay running in OBS](media/obs-overlay-preview.png)
+
+[Watch the combo overlay demo video](media/combo-overlay-demo.webm)
+
+### Control Room
+
+![Control Room theme selector](media/control-room-preview.png)
+
 ## Quick start
 
 1. Install Node.js 18 or newer.

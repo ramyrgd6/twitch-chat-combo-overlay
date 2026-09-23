@@ -137,10 +137,12 @@
 
     /* Blizzard: an icy frame beneath a dense, gently windblown snowfall. */
     :root[data-theme="blizzard"] .theme-fx { opacity: 1; z-index: 3; }
-    :root[data-theme="blizzard"] .combo-card { border-radius: 34px; clip-path: none; background: radial-gradient(circle at 18% 0%, rgba(255,255,255,.72), transparent 26%), linear-gradient(145deg, #8fd5f5 0%, #32759e 48%, #123453 100%); border: 3px solid #f0fcff; border-bottom: 8px solid #154a70; box-shadow: 0 13px 0 #08243b, inset 0 2px 0 rgba(255,255,255,.54), 0 0 34px rgba(162,226,255,.72); }
-    :root[data-theme="blizzard"] #message { color: #f6fdff; -webkit-text-stroke: 3px #0a3c60; text-shadow: 3px 4px 0 #092940; }
-    :root[data-theme="blizzard"] .label { color: #0c4268; background: #e8faff; border-color: #fff; box-shadow: 3px 3px 0 #175273; }
-    :root[data-theme="blizzard"] .message-wrap { border-color: rgba(232,250,255,.3); }
+    :root[data-theme="blizzard"] .combo-card { overflow: hidden; border-radius: 34px; clip-path: none; background: radial-gradient(circle at 18% 0%, rgba(255,255,255,.66), transparent 27%), linear-gradient(128deg, rgba(210,245,255,.54) 0%, rgba(66,152,196,.48) 44%, rgba(10,54,88,.7) 100%); border: 2px solid rgba(242,253,255,.84); border-bottom: 7px solid rgba(101,190,230,.6); box-shadow: 0 13px 0 rgba(5,34,57,.54), inset 0 2px 0 rgba(255,255,255,.62), inset 0 -18px 30px rgba(2,35,58,.24), 0 0 34px rgba(162,226,255,.72); backdrop-filter: blur(14px) saturate(1.25); }
+    :root[data-theme="blizzard"] .combo-card::after { width: 53%; height: 42%; right: -9%; top: -15%; transform: rotate(18deg); background: linear-gradient(100deg, transparent, rgba(255,255,255,.62), transparent); box-shadow: none; opacity: .72; }
+    :root[data-theme="blizzard"] .combo-card::before { opacity: .22; background: linear-gradient(120deg, transparent 0 20%, rgba(255,255,255,.46) 28% 31%, transparent 38% 62%, rgba(210,246,255,.4) 69% 72%, transparent 80%); }
+    :root[data-theme="blizzard"] #message { color: #f9feff; -webkit-text-stroke: 3px #0a3c60; text-shadow: 3px 4px 0 rgba(5,38,63,.78), 0 0 14px rgba(235,252,255,.42); }
+    :root[data-theme="blizzard"] .label { color: #0c4268; background: rgba(238,251,255,.7); border-color: rgba(255,255,255,.88); box-shadow: 3px 3px 0 rgba(23,82,115,.62); backdrop-filter: blur(8px); }
+    :root[data-theme="blizzard"] .message-wrap { border-color: rgba(232,250,255,.38); background: rgba(3,46,75,.1); }
     :root[data-theme="blizzard"] .theme-fx .fx-a, :root[data-theme="blizzard"] .theme-fx .fx-b { display: none; }
     .theme-fx .snowflake { display: none; }
     :root[data-theme="blizzard"] .theme-fx .snowflake { display: block; top: var(--y); left: var(--x); color: var(--snow-color, #fff); font-family: Georgia, serif; font-size: var(--size); line-height: 1; text-shadow: 0 0 7px rgba(211,245,255,.95), 0 0 18px rgba(125,207,255,.72); animation: snow-fall var(--duration) var(--delay) linear infinite; }

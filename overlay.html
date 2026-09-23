@@ -120,7 +120,7 @@
     :root[data-theme="tsunami"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
 
     :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(960px, 130%); height: 300px; left: 50%; bottom: -105px; transform: translateX(-50%); filter: drop-shadow(0 0 14px rgba(38,211,255,.52)); }
-    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); transform-origin: 50% 100%; animation: wave-idle 3.2s ease-in-out infinite; }
+    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); transform-origin: 50% 100%; }
     :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #eaffff; stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; opacity: .95; }
     :root[data-theme="tsunami"] .foam { fill: #fff; opacity: .88; animation: foam-bob 1.9s ease-in-out infinite alternate; }
     :root[data-theme="tsunami"] .splash { fill: #dfffff; opacity: 0; transform-box: fill-box; transform-origin: center bottom; }
@@ -130,9 +130,9 @@
     :root[data-theme="tsunami"] #combo.milestone::before { background: radial-gradient(ellipse, rgba(46,193,255,.68), transparent 68%); }
 
     :root[data-theme="inferno"] .inferno-art { display: block; width: min(900px, 123%); height: 290px; left: 50%; bottom: -98px; transform: translateX(-50%); filter: drop-shadow(0 0 16px rgba(255,79,25,.58)); }
-    :root[data-theme="inferno"] .flame-back { fill: url(#flame-deep); transform-origin: 50% 100%; animation: flame-idle-a 1.55s ease-in-out infinite alternate; }
-    :root[data-theme="inferno"] .flame-mid { fill: url(#flame-mid); transform-origin: 50% 100%; animation: flame-idle-b 1.2s -.4s ease-in-out infinite alternate; }
-    :root[data-theme="inferno"] .flame-core { fill: url(#flame-core); transform-origin: 50% 100%; animation: flame-idle-c .92s -.25s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-back { fill: url(#flame-deep); transform-origin: 50% 100%; animation: flame-idle-a 2.15s -.3s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-mid { fill: url(#flame-mid); transform-origin: 50% 100%; animation: flame-idle-b 1.63s -.9s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-core { fill: url(#flame-core); transform-origin: 50% 100%; animation: flame-idle-c 1.28s -.5s ease-in-out infinite alternate; }
     :root[data-theme="inferno"] .ember { fill: #ffe99b; opacity: 0; transform-box: fill-box; transform-origin: center; }
     :root[data-theme="inferno"] #combo.impact .inferno-art { animation: flame-flare 520ms cubic-bezier(.12,.8,.2,1.08) both; filter: drop-shadow(0 0 30px rgba(255,104,31,.95)); }
     :root[data-theme="inferno"] #combo.impact .ember { animation: ember-rise 860ms ease-out both; animation-delay: var(--delay); }
@@ -154,15 +154,14 @@
     @keyframes meteor-shower { 0%, 5% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 10% { opacity: 1; } 38% { opacity: 1; } 55%, 100% { opacity: 0; transform: translate(-420px, 280px) rotate(145deg); } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes wave-roll { 0%, 100% { transform: translateY(0) rotate(7deg) scaleX(1); } 50% { transform: translateY(-10px) rotate(3deg) scaleX(1.06); } }
-    @keyframes wave-idle { 0%,100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-7px) scaleX(1.025); } }
     @keyframes wave-crash { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-34px) skewX(-4deg) scale(1.12,1.2); } 100% { transform: translateY(0) skewX(0) scale(1); } }
     @keyframes foam-bob { to { transform: translate(4px,-6px) scale(1.08); opacity: 1; } }
     @keyframes splash-pop { 0% { opacity: 0; transform: translate(0,0) scale(.3); } 22% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.8); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes flame-flicker { 0% { transform: translateY(0) scaleX(1) skewX(-2deg); } 100% { transform: translateY(-18px) scaleX(.82) skewX(5deg); filter: drop-shadow(0 0 20px #ff8126); } }
-    @keyframes flame-idle-a { to { transform: translateY(-8px) scaleX(.94) skewX(-2deg); } }
-    @keyframes flame-idle-b { to { transform: translateY(-15px) scaleX(1.08) skewX(3deg); } }
-    @keyframes flame-idle-c { to { transform: translateY(-21px) scaleX(.84) skewX(-4deg); } }
+    @keyframes flame-idle-a { to { transform: translateY(-3px) scaleX(.99) skewX(-1deg); opacity: .94; } }
+    @keyframes flame-idle-b { to { transform: translateY(-6px) scaleX(1.025) skewX(1.5deg); filter: brightness(1.08); } }
+    @keyframes flame-idle-c { to { transform: translateY(-8px) scaleX(.94) skewX(-2deg); filter: brightness(1.17); } }
     @keyframes flame-flare { 0% { transform: translateX(-50%) scale(1); } 42% { transform: translateX(-50%) translateY(-30px) scale(1.18,1.34); } 100% { transform: translateX(-50%) scale(1); } }
     @keyframes ember-rise { 0% { opacity: 0; transform: translate(0,8px) scale(.35); } 18% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.1); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }

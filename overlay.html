@@ -57,7 +57,8 @@
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
     /* After the entrance, keep the combo alive with a subtle, continuous shake. */
-    #combo.visible:not(.hiding):not(.glitch) .combo-card { animation: idle-shake 620ms steps(2, end) infinite; }
+    #combo.visible:not(.hiding):not(.glitch):not(.milestone-hit) .combo-card { animation: idle-pulse 2.35s ease-in-out infinite; }
+    #combo.visible:not(.hiding):not(.glitch).milestone-hit .combo-card { animation: milestone-hit 430ms steps(2, end) both; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -272,12 +273,16 @@
       68% { transform: translateX(-3px) skewX(0); }
       100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
     }
-    @keyframes idle-shake {
+    @keyframes idle-pulse {
       0%, 100% { translate: 0 0; }
-      20% { translate: calc(-6px * var(--power)) 3px; }
-      42% { translate: calc(6px * var(--power)) -3px; }
-      66% { translate: calc(-4px * var(--power)) 2px; }
-      84% { translate: calc(3px * var(--power)) -2px; }
+      50% { translate: 0 -2px; }
+    }
+    @keyframes milestone-hit {
+      0%, 100% { translate: 0 0; filter: brightness(1); }
+      20% { translate: calc(-7px * var(--power)) 3px; filter: brightness(1.25); }
+      42% { translate: calc(7px * var(--power)) -3px; }
+      64% { translate: calc(-4px * var(--power)) 2px; }
+      82% { translate: calc(3px * var(--power)) -1px; }
     }
     @keyframes count-pop {
       0% { transform: scale(1); filter: brightness(1); }
@@ -359,6 +364,7 @@
     const count = document.querySelector('#count');
     let hideTimer;
     let glitchTimer;
+    let milestoneTimer;
     const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
@@ -423,6 +429,13 @@
       combo.style.setProperty('--combo-color', intensity.color);
       combo.style.setProperty('--count-color', intensity.color);
       combo.classList.toggle('milestone', intensity.milestone);
+      if ([5, 10, 25, 50].includes(event.count)) {
+        combo.classList.remove('milestone-hit');
+        void combo.offsetWidth;
+        combo.classList.add('milestone-hit');
+        clearTimeout(milestoneTimer);
+        milestoneTimer = setTimeout(() => combo.classList.remove('milestone-hit'), 450);
+      }
       // An active combo keeps its existing animation/state. New repeats only
       // update the displayed count and extend its lifetime.
       if (!wasVisible) {
@@ -443,8 +456,9 @@
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
-      combo.classList.remove('visible', 'glitch', 'slam', 'shake');
+      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit');
       clearTimeout(glitchTimer);
+      clearTimeout(milestoneTimer);
       combo.classList.add('hiding');
       setTimeout(() => combo.classList.remove('hiding'), 1100);
     }

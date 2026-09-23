@@ -43,8 +43,10 @@ Use the same dimensions as your scene (for example, 1920 × 1080). The page has 
 | `TWITCH_OAUTH_TOKEN` | empty | Optional bot OAuth token. |
 | `PORT` | `3000` | Local web server port. |
 | `HOST` | `127.0.0.1` | Loopback address used to keep the app private to this computer. |
-| `COMBO_TIMEOUT_MS` | `6500` | Time window in milliseconds before a repeat chain expires. |
-| `MIN_COMBO_COUNT` | `2` | First count sent to the overlay. |
+| `COMBO_TIMEOUT_MS` | `6500` | Default timeout in milliseconds before a repeat chain expires. |
+| `MIN_COMBO_COUNT` | `2` | Default first count sent to the overlay. |
+
+You can also change the timeout and starting count from the Control Room. Those choices are saved locally alongside your selected theme and take effect immediately; `.env` remains the fallback for a fresh installation.
 
 To preview a different fade time in the browser source only, append `?timeout=6000` to its URL. Normally this should match `COMBO_TIMEOUT_MS`.
 
@@ -66,7 +68,7 @@ Picking a theme saves it in a local `settings.json` file and immediately updates
 
 Messages are compared after trimming their outer whitespace and converting to lowercase. `Pog`, `POG`, and ` pog ` therefore combine, while different punctuation remains distinct. Edit `normalizeMessage()` in `server.js` to change matching rules.
 
-Native Twitch emotes are rendered as their actual emote images in the overlay. Third-party emotes (such as BetterTTV or 7TV) are not supplied through standard Twitch chat tags, so they display as their text names unless you add a third-party emote integration.
+Native Twitch emotes are rendered as their actual emote images in the overlay. BetterTTV, 7TV, and FrankerFaceZ global and channel emotes are also loaded once when chat first provides the channel ID, then kept in memory for the running session. Their public CDN images are only used for rendering; no emote data is stored in the project.
 
 Each message has its own short-lived combo record. When a repeat reaches `MIN_COMBO_COUNT`, the server sends an event to the overlay; the newest event is the one shown. Expired records are removed automatically.
 

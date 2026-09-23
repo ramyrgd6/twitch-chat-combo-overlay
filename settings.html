@@ -25,6 +25,13 @@
     .rainfall { --theme: #a7eaff; background: linear-gradient(145deg, #6488a5 0%, #213b5d 48%, #0a1428 100%); border-bottom: 5px solid #79c9ff; box-shadow: inset 0 1px 0 rgba(255,255,255,.22); }
     .inferno { --theme: #ff8a39; background: radial-gradient(circle at 52% -18%, #a14528 0%, #43161b 50%, #16090d 100%); border-bottom: 5px solid #ff7138; box-shadow: inset 0 1px 0 rgba(255,193,105,.2); }
     .luna { --theme: #d9dcff; background: linear-gradient(145deg, #57528f, #171833 65%); border-bottom: 5px solid var(--theme); }
+    .rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 22px; border: 1px solid #303650; border-radius: 18px; background: rgba(21,24,39,.72); }
+    .rule { display: grid; gap: 9px; }
+    .rule-label { display: flex; justify-content: space-between; gap: 12px; font-weight: 700; }
+    output { color: #73e2ff; font-variant-numeric: tabular-nums; }
+    input[type="range"] { width: 100%; accent-color: #55ddff; }
+    .rule small { color: var(--muted); }
+    @media (max-width: 620px) { .rules { grid-template-columns: 1fr; } }
     .footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-top: 46px; padding-top: 24px; border-top: 1px solid #292d40; color: var(--muted); }
     code { padding: 3px 6px; border-radius: 5px; background: #23283b; color: #f5f7ff; }
     #saved { color: #69efab; font-weight: 700; opacity: 0; transition: opacity .2s; }
@@ -46,6 +53,20 @@
       <button class="theme luna" data-theme="luna" aria-pressed="false"><strong>Luna</strong><span>Crescent moon · orbiting stars</span></button>
     </section>
 
+    <h2>Combo behavior</h2>
+    <section class="rules" aria-label="Combo behavior settings">
+      <label class="rule" for="combo-timeout">
+        <span class="rule-label">Combo timeout <output id="timeout-value">6.5 seconds</output></span>
+        <input id="combo-timeout" type="range" min="1000" max="60000" step="500" value="6500">
+        <small>How long chat has to repeat the same message before its combo ends.</small>
+      </label>
+      <label class="rule" for="minimum-count">
+        <span class="rule-label">Show starting at <output id="minimum-value">x2</output></span>
+        <input id="minimum-count" type="range" min="2" max="50" step="1" value="2">
+        <small>Messages below this repeat count stay hidden from the overlay.</small>
+      </label>
+    </section>
+
     <div class="footer">
       <span id="saved" role="status">Theme saved — OBS updated.</span>
       <span>OBS URL: <code>/overlay.html</code> · Preview: <code>?preview=1</code></span>
@@ -54,6 +75,11 @@
   <script>
     const cards = [...document.querySelectorAll('.theme')];
     const saved = document.querySelector('#saved');
+    const timeout = document.querySelector('#combo-timeout');
+    const minimum = document.querySelector('#minimum-count');
+    const timeoutValue = document.querySelector('#timeout-value');
+    const minimumValue = document.querySelector('#minimum-value');
+    let currentSettings = { theme: 'game', comboTimeoutMs: 6500, minComboCount: 2 };
 
     function select(theme) {
       cards.forEach(card => {
@@ -62,15 +88,27 @@
         card.setAttribute('aria-pressed', String(selected));
       });
     }
-    async function save(theme) {
-      const response = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ theme }) });
+    function render(settings) {
+      currentSettings = settings;
+      select(settings.theme);
+      timeout.value = settings.comboTimeoutMs;
+      minimum.value = settings.minComboCount;
+      timeoutValue.value = `${(settings.comboTimeoutMs / 1000).toFixed(settings.comboTimeoutMs % 1000 ? 1 : 0)} seconds`;
+      minimumValue.value = `x${settings.minComboCount}`;
+    }
+    async function save(next) {
+      const response = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
       if (!response.ok) throw new Error('Could not save settings');
-      select(theme);
+      render(await response.json());
       saved.classList.add('visible');
       setTimeout(() => saved.classList.remove('visible'), 2200);
     }
-    cards.forEach(card => card.addEventListener('click', () => save(card.dataset.theme).catch(error => alert(error.message))));
-    fetch('/api/settings').then(response => response.json()).then(settings => select(settings.theme)).catch(() => select('game'));
+    cards.forEach(card => card.addEventListener('click', () => save({ ...currentSettings, theme: card.dataset.theme }).catch(error => alert(error.message))));
+    timeout.addEventListener('input', () => timeoutValue.value = `${(timeout.value / 1000).toFixed(timeout.value % 1000 ? 1 : 0)} seconds`);
+    minimum.addEventListener('input', () => minimumValue.value = `x${minimum.value}`);
+    timeout.addEventListener('change', () => save({ ...currentSettings, comboTimeoutMs: Number(timeout.value) }).catch(error => alert(error.message)));
+    minimum.addEventListener('change', () => save({ ...currentSettings, minComboCount: Number(minimum.value) }).catch(error => alert(error.message)));
+    fetch('/api/settings').then(response => response.json()).then(render).catch(() => render(currentSettings));
   </script>
 </body>
 </html>

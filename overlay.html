@@ -468,11 +468,13 @@
     if (options.get('preview') === '1') {
       let previewCount = 2;
       const preview = () => {
-        showCombo({ message: 'HYPE', count: previewCount++, emotes: {}, timeoutMs: 3000 });
-        if (previewCount > 10) previewCount = 2;
+        // Send repeats faster than the timeout so preview mode behaves like one
+        // real, uninterrupted chat combo rather than repeatedly exiting.
+        showCombo({ message: 'GG', count: previewCount++, emotes: {}, timeoutMs: 7000 });
+        if (previewCount > 99) previewCount = 2;
       };
       preview();
-      setInterval(preview, 3800);
+      setInterval(preview, 1200);
     }
   </script>
 </body>

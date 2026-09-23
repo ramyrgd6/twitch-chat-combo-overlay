@@ -112,8 +112,11 @@
     :root[data-theme="inferno"] .theme-fx .fx-a, :root[data-theme="inferno"] .theme-fx .fx-b { display: none; }
     :root[data-theme="inferno"] .theme-fx .flame { display: block; width: var(--width); height: var(--height); bottom: -10px; left: var(--left); background: linear-gradient(to top, #e91e27 0%, #ff6a25 46%, #ffd83d 75%, #fff4a8 100%); clip-path: polygon(0 100%, 13% 45%, 26% 70%, 43% 8%, 57% 61%, 73% 30%, 87% 72%, 100% 0, 100% 100%); filter: drop-shadow(0 0 10px #ff4d24); transform-origin: bottom center; animation: flame-flicker var(--duration) var(--delay) ease-in-out infinite alternate; }
     .theme-fx .fire-ember { display: none; }
-    :root[data-theme="inferno"] .theme-fx .fire-ember { display: block; width: var(--size); height: var(--size); top: var(--y); left: var(--x); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fffde2 0 15%, #ffd650 30%, #ff7029 66%, #b51d0d 100%); box-shadow: 0 0 9px #ffd052, 0 0 22px rgba(255,65,20,.9); animation: ember-fall var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="inferno"] .theme-fx .fire-ember { display: block; width: var(--size); height: var(--size); top: var(--y); left: calc(var(--x) + 48%); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fffde2 0 15%, #ffd650 30%, #ff7029 66%, #b51d0d 100%); box-shadow: 0 0 9px #ffd052, 0 0 22px rgba(255,65,20,.9); animation: ember-fall var(--duration) var(--delay) linear infinite; }
     :root[data-theme="inferno"] .theme-fx .fire-ember::after { content: ''; position: absolute; z-index: -1; width: max(3px, calc(var(--size) * .34)); height: var(--trail, 24px); left: 50%; bottom: calc(100% - 3px); transform: translateX(-50%) rotate(calc(var(--tilt, 0deg) + 48deg)); transform-origin: bottom; border-radius: 99px; background: linear-gradient(to top, rgba(255,112,35,.9), rgba(255,80,20,0)); filter: blur(.4px); }
+    .theme-fx .fireball { display: none; }
+    :root[data-theme="inferno"] .theme-fx .fireball { display: block; width: var(--size); height: var(--size); top: var(--y); left: var(--x); border-radius: 50%; background: radial-gradient(circle at 34% 30%, #fffde8 0 11%, #ffd34b 20%, #ff7c24 47%, #df2918 72%, #65100c 100%); box-shadow: 0 0 12px #ffe06a, 0 0 27px #ff7a24, 0 0 48px rgba(240,48,16,.8); animation: ember-fall var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="inferno"] .theme-fx .fireball::after { content: ''; position: absolute; z-index: -1; width: calc(var(--size) * .42); height: var(--trail); left: 50%; bottom: calc(100% - 3px); transform: translateX(-50%) rotate(48deg); transform-origin: bottom; border-radius: 99px; background: linear-gradient(to top, #ff9b2b, rgba(244,55,19,.55) 40%, transparent); filter: blur(1.4px); }
 
     /* SVG theme art: precise silhouettes stay behind the readable combo UI. */
     .theme-art { display: none; position: absolute; pointer-events: none; overflow: visible; }
@@ -434,6 +437,9 @@
       <i class="fire-ember" style="--x:7%;--y:112px;--size:9px;--trail:26px;--tilt:5deg;--duration:4.6s;--delay:-3.7s;--drift:24px"></i>
       <i class="fire-ember" style="--x:47%;--y:104px;--size:12px;--trail:33px;--tilt:-7deg;--duration:3.9s;--delay:-1.9s;--drift:-28px"></i>
       <i class="fire-ember" style="--x:78%;--y:119px;--size:10px;--trail:28px;--tilt:9deg;--duration:4.2s;--delay:-.7s;--drift:30px"></i>
+      <!-- A few clean comet-like fireballs share the same diagonal path. -->
+      <i class="fireball" style="--x:86%;--y:-42px;--size:21px;--trail:72px;--duration:6.2s;--delay:-1.6s"></i>
+      <i class="fireball" style="--x:105%;--y:76px;--size:17px;--trail:58px;--duration:7s;--delay:-4.7s"></i>
       <i class="wave" style="--left:-8%;--bottom:2%;--width:250px;--height:100px;--duration:2.4s;--delay:-.5s"></i>
       <i class="wave" style="--left:20%;--bottom:-7%;--width:290px;--height:120px;--duration:3.1s;--delay:-1.6s"></i>
       <i class="wave" style="--left:53%;--bottom:4%;--width:225px;--height:92px;--duration:2.7s;--delay:-.9s"></i>

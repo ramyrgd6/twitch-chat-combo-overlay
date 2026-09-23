@@ -32,7 +32,7 @@ Add a **Browser** source, set its URL to:
 
 `http://localhost:3000/overlay.html`
 
-Use the same dimensions as your scene (for example, 1920 × 1080). The page has a transparent background. OBS and the Node server need to be on the same computer; if they are on separate machines, replace `localhost` with the server computer's local IP address and allow the selected port through its firewall.
+Use the same dimensions as your scene (for example, 1920 × 1080). The page has a transparent background. OBS and the Node server should run on the same computer; by default, the app listens only on that computer to keep the Control Room and chat events private.
 
 ## Configuration
 
@@ -42,6 +42,7 @@ Use the same dimensions as your scene (for example, 1920 × 1080). The page has 
 | `TWITCH_BOT_USERNAME` | empty | Optional authenticated bot username. |
 | `TWITCH_OAUTH_TOKEN` | empty | Optional bot OAuth token. |
 | `PORT` | `3000` | Local web server port. |
+| `HOST` | `127.0.0.1` | Loopback address used to keep the app private to this computer. |
 | `COMBO_TIMEOUT_MS` | `6500` | Time window in milliseconds before a repeat chain expires. |
 | `MIN_COMBO_COUNT` | `2` | First count sent to the overlay. |
 
@@ -74,3 +75,7 @@ Customize the visual palette, fonts, sizes, and placement through the CSS variab
 ## Development note
 
 This project was built with the help of AI-assisted tools and is shared as an experimental, “vibecoded” project. Please review the code before using it in your own setup, and feel free to fork, adapt, or ignore it as you prefer.
+
+## Security notes
+
+The app binds to `127.0.0.1` by default, so the overlay, Control Room, and WebSocket are not reachable from other devices on the network. It accepts WebSocket connections only from local browser-source origins when an origin is supplied. Anonymous Twitch chat access is supported and is the safest default; if you use a bot OAuth token, use a dedicated read-only bot account, keep the token in `.env`, and never commit or share that file.

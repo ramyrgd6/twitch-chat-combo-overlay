@@ -7,6 +7,9 @@ const tmi = require('tmi.js');
 const { WebSocketServer } = require('ws');
 
 const PORT = numberSetting('PORT', 3000);
+// Loopback-only by default: the overlay and Control Room are not exposed to
+// anyone else on the local network.
+const HOST = process.env.HOST || '127.0.0.1';
 const CHANNEL = (process.env.TWITCH_CHANNEL || '').trim().replace(/^#/, '').toLowerCase();
 const COMBO_TIMEOUT_MS = numberSetting('COMBO_TIMEOUT_MS', 6500);
 const MIN_COMBO_COUNT = numberSetting('MIN_COMBO_COUNT', 2);
@@ -24,6 +27,7 @@ if (!CHANNEL) {
 const combos = new Map();
 
 const server = http.createServer((request, response) => {
+  applySecurityHeaders(response);
   const requested = new URL(request.url, `http://${request.headers.host}`).pathname;
 
   if (requested === '/api/settings') {
@@ -48,7 +52,18 @@ const server = http.createServer((request, response) => {
   fs.createReadStream(filePath).pipe(response);
 });
 
-const wss = new WebSocketServer({ server, path: '/ws' });
+const allowedOrigins = new Set([
+  `http://localhost:${PORT}`,
+  `http://127.0.0.1:${PORT}`
+]);
+
+const wss = new WebSocketServer({
+  server,
+  path: '/ws',
+  // A normal OBS/browser-source request includes one of the local origins.
+  // Origin-less clients are permitted for compatibility with embedded sources.
+  verifyClient: ({ origin }, done) => done(!origin || allowedOrigins.has(origin), 403, 'Local browser source only')
+});
 
 wss.on('connection', (socket) => {
   // Handy for checking that OBS is connected without exposing secrets.
@@ -96,6 +111,22 @@ function updateSettings(request, response) {
 function sendJson(response, status, data) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
   response.end(JSON.stringify(data));
+}
+
+function applySecurityHeaders(response) {
+  response.setHeader('X-Content-Type-Options', 'nosniff');
+  response.setHeader('Referrer-Policy', 'no-referrer');
+  response.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  response.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' https://static-cdn.jtvnw.net data:",
+    "connect-src 'self' ws: wss:",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "frame-ancestors 'self'"
+  ].join('; '));
 }
 
 function normalizeMessage(message) {
@@ -160,9 +191,9 @@ client.on('connected', (address, port) => {
 client.on('disconnected', (reason) => console.warn(`Twitch chat disconnected: ${reason}`));
 client.connect().catch((error) => console.error('Unable to connect to Twitch:', error.message));
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`OBS overlay: http://localhost:${PORT}/overlay.html`);
-  console.log(`WebSocket: ws://localhost:${PORT}/ws | timeout: ${COMBO_TIMEOUT_MS}ms`);
+  console.log(`Listening securely on ${HOST}:${PORT} | timeout: ${COMBO_TIMEOUT_MS}ms`);
 });
 
 function numberSetting(name, fallback) {

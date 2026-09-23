@@ -58,7 +58,7 @@ These are the steps used for the current Linux workflow.
 
 Example terminal output after the app connects to chat.
 
-![Successful local server startup](media/local-startup-preview.png)
+![Successful local server startup](media/local-startup-full-preview.png)
 
 ## Setup on Windows (untested)
 

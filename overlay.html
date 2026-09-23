@@ -69,6 +69,9 @@
       background: radial-gradient(ellipse, color-mix(in srgb, var(--combo-color) 58%, transparent), transparent 68%);
       opacity: 0;
     }
+    /* The outgoing message breaks into its own words when a combo expires. */
+    #message-burst { position: absolute; inset: 0; z-index: 8; pointer-events: none; overflow: visible; }
+    .message-shard { position: absolute; left: 50%; top: 50%; max-width: 38vw; overflow: hidden; color: #fff; font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; font-size: clamp(24px, 3.3vw, 58px); font-style: italic; line-height: 1; letter-spacing: .03em; text-align: center; text-overflow: ellipsis; white-space: nowrap; -webkit-text-stroke: 2px var(--ink); text-shadow: 3px 4px 0 var(--ink), 0 0 16px var(--combo-color); animation: message-explode 850ms cubic-bezier(.12,.7,.24,1) var(--delay) both; }
     .theme-fx { position: absolute; inset: -115px -110px; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease; }
     .theme-fx i { position: absolute; display: block; }
 
@@ -360,6 +363,7 @@
     }
     @keyframes debris { 0%, 45% { opacity: .8; transform: scale(.55); } 100% { opacity: 0; transform: translateY(108px) scale(1.95) rotate(13deg); } }
     @keyframes fragments { 0%, 35% { opacity: 0; } 55% { opacity: .85; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-44px, 92px) rotate(-11deg) scale(1.4); } }
+    @keyframes message-explode { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); } 12% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--burst-x)), calc(-50% + var(--burst-y))) rotate(var(--burst-rotate)) scale(.62); } }
   </style>
 </head>
 <body>
@@ -482,6 +486,7 @@
       <div class="message-wrap"><div id="message"></div></div>
     </section>
     <div id="count"></div>
+    <div id="message-burst" aria-hidden="true"></div>
   </main>
   <script>
     // These must match the backend's defaults unless you add settings via URL.
@@ -490,10 +495,12 @@
     const combo = document.querySelector('#combo');
     const message = document.querySelector('#message');
     const count = document.querySelector('#count');
+    const messageBurst = document.querySelector('#message-burst');
     let hideTimer;
     let glitchTimer;
     let milestoneTimer;
     let themeBurstTimer;
+    let lastMessage = '';
     const validThemes = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
@@ -550,6 +557,8 @@
       const wasVisible = combo.classList.contains('visible') && !combo.classList.contains('hiding');
       const intensity = intensityFor(event.count);
       renderMessage(event.message, event.emotes);
+      lastMessage = event.message;
+      messageBurst.replaceChildren();
       count.textContent = `x${event.count}`;
       count.classList.remove('count-pop');
       void count.offsetWidth; // replay the count punch on every new repeat
@@ -589,15 +598,38 @@
       hideTimer = setTimeout(hideCombo, event.timeoutMs || timeoutMs);
     }
 
+    function explodeMessage() {
+      const text = lastMessage.trim();
+      if (!text) return;
+      const directions = [
+        [-250, -145, -28], [-105, -220, -14], [78, -225, 12],
+        [238, -130, 27], [-280, 22, -20], [285, 38, 19],
+        [-155, 175, -12], [15, 220, 7], [175, 165, 23]
+      ];
+      const shardText = text.length > 24 ? `${text.slice(0, 24)}…` : text;
+      messageBurst.replaceChildren();
+      directions.forEach(([x, y, rotation], index) => {
+        const shard = document.createElement('span');
+        shard.className = 'message-shard';
+        shard.textContent = shardText;
+        shard.style.setProperty('--burst-x', `${x}px`);
+        shard.style.setProperty('--burst-y', `${y}px`);
+        shard.style.setProperty('--burst-rotate', `${rotation}deg`);
+        shard.style.setProperty('--delay', `${index * 14}ms`);
+        messageBurst.append(shard);
+      });
+    }
+
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
+      explodeMessage();
       combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit', 'theme-burst');
       clearTimeout(glitchTimer);
       clearTimeout(milestoneTimer);
       clearTimeout(themeBurstTimer);
       combo.classList.add('hiding');
-      setTimeout(() => combo.classList.remove('hiding'), 1100);
+      setTimeout(() => { combo.classList.remove('hiding'); messageBurst.replaceChildren(); }, 1100);
     }
 
     function connect() {
@@ -619,13 +651,13 @@
     if (options.get('preview') === '1') {
       let previewCount = 2;
       const preview = () => {
-        // Send repeats faster than the timeout so preview mode behaves like one
-        // real, uninterrupted chat combo rather than repeatedly exiting.
-        showCombo({ message: 'GG', count: previewCount++, emotes: {}, timeoutMs: 7000 });
-        if (previewCount > 99) previewCount = 2;
+        const isFinalPreview = previewCount === 15;
+        // Preview plays one uninterrupted combo, then pauses at x15 for easy
+        // visual inspection instead of looping back to x2.
+        showCombo({ message: 'GG', count: previewCount++, emotes: {}, timeoutMs: isFinalPreview ? 60000 : 7000 });
+        if (!isFinalPreview) setTimeout(preview, 1200);
       };
       preview();
-      setInterval(preview, 1200);
     }
   </script>
 </body>

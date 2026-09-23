@@ -21,8 +21,8 @@
     :root[data-theme="sakura"] {
       --accent: #ff82bd; --accent-hot: #ff3b8d; --panel: rgba(49, 13, 43, .73); --panel-edge: rgba(255, 208, 236, .5); --ink: #250d24;
     }
-    :root[data-theme="tsunami"] {
-      --accent: #34dfff; --accent-hot: #247cff; --panel: rgba(5, 28, 54, .74); --panel-edge: rgba(183, 248, 255, .5); --ink: #061827;
+    :root[data-theme="rainfall"] {
+      --accent: #92d9ff; --accent-hot: #568cff; --panel: rgba(10, 23, 45, .78); --panel-edge: rgba(196, 231, 255, .52); --ink: #071426;
     }
     :root[data-theme="inferno"] {
       --accent: #ff9a34; --accent-hot: #ff304f; --panel: rgba(54, 13, 12, .77); --panel-edge: rgba(255, 211, 135, .5); --ink: #250809;
@@ -85,20 +85,19 @@
     :root[data-theme="sakura"] .theme-fx .petal { display: block; width: calc(var(--size) * 1.35); height: var(--size); top: -30px; left: var(--x); border-radius: 90% 10% 90% 10%; background: var(--petal-color, #ff9dcc); box-shadow: 0 0 9px rgba(255,255,255,.72); animation: sakura-rain var(--duration) var(--delay) linear infinite; }
     .theme-fx .meteor { display: none; }
     :root[data-theme="luna"] .theme-fx .meteor { display: block; width: calc(var(--length) * 1.55); height: 8px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #5264ff 20%, #9eaeff 45%, #fff 72%, transparent); box-shadow: 0 0 15px #f1f3ff, 0 0 38px #7789ff, 0 0 64px rgba(102,120,255,.8); animation: meteor-shower var(--duration) var(--delay) linear infinite; }
+    .theme-fx .rain-drop { display: none; }
+    :root[data-theme="rainfall"] .theme-fx .rain-drop { display: block; width: var(--width, 4px); height: var(--length, 40px); top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(to bottom, rgba(234,251,255,0), #c8f3ff 40%, #73bfff 100%); box-shadow: 0 0 7px rgba(145,218,255,.75); transform: rotate(28deg); animation: rain-fall var(--duration) var(--delay) linear infinite; }
 
-    /* Tsunami: a calm, rounded water-glass card. The wave is tucked into it,
-       rather than becoming a second, disconnected piece below the counter. */
-    :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
-    :root[data-theme="tsunami"] .theme-fx { z-index: 2; }
-    :root[data-theme="tsunami"] .combo-card { border-radius: 34px; clip-path: none; background: linear-gradient(180deg, #b9f7ff 0%, #43d9fa 46%, #096fcb 100%); border: 4px solid #edffff; border-bottom: 8px solid #0752a4; box-shadow: 0 12px 0 #043d78, 0 0 28px #42e7ff; }
-    :root[data-theme="tsunami"] #message { color: #083e7a; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #79ecff; }
-    :root[data-theme="tsunami"] .label { color: #053b71; background: #d8fbff; border-color: #087cd0; box-shadow: 3px 3px 0 #0752a4; }
-    :root[data-theme="tsunami"] .message-wrap { border-color: rgba(5,81,164,.28); }
-    :root[data-theme="tsunami"] .theme-fx .fx-a { width: 240px; height: 92px; bottom: 0; left: 0; border: 9px solid #3ae8ff; border-color: #3ae8ff transparent transparent #3ae8ff; border-radius: 70% 0 0; transform: rotate(12deg); box-shadow: 180px 7px 0 -4px #78f5ff, 365px -18px 0 -5px #259eff; animation: waves 2.8s ease-in-out infinite; }
-    :root[data-theme="tsunami"] .theme-fx .fx-b { width: 155px; height: 55px; right: 4%; top: 18px; border: 6px solid #9af8ff; border-color: #9af8ff #9af8ff transparent transparent; border-radius: 0 80% 0 0; transform: rotate(-16deg); animation: waves 2.3s .5s ease-in-out infinite reverse; }
+    /* Rainfall: a dark storm-glass card with bright diagonal rainfall. */
+    :root[data-theme="rainfall"] .theme-fx { opacity: 1; z-index: 3; }
+    :root[data-theme="rainfall"] .combo-card { border-radius: 30px; clip-path: none; background: linear-gradient(145deg, #547b9d 0%, #1c385b 45%, #101d38 100%); border: 3px solid #bcecff; border-bottom: 8px solid #071328; box-shadow: 0 13px 0 #050b16, inset 0 1px 0 rgba(255,255,255,.32), 0 0 31px rgba(88,181,255,.52); }
+    :root[data-theme="rainfall"] #message { color: #f3fbff; -webkit-text-stroke: 3px #10294b; text-shadow: 3px 4px 0 #071529; }
+    :root[data-theme="rainfall"] .label { color: #102c4e; background: #c7efff; border-color: #f5fdff; box-shadow: 3px 3px 0 #0a1b34; }
+    :root[data-theme="rainfall"] .message-wrap { border-color: rgba(191,232,255,.28); }
+    :root[data-theme="rainfall"] .theme-fx .fx-a { display: none; }
+    :root[data-theme="rainfall"] .theme-fx .fx-b { display: none; }
     .theme-fx .wave, .theme-fx .flame { display: none; }
-    :root[data-theme="tsunami"] .theme-fx .fx-a, :root[data-theme="tsunami"] .theme-fx .fx-b { display: none; }
-    :root[data-theme="tsunami"] .theme-fx .wave { display: block; width: var(--width); height: var(--height); bottom: var(--bottom); left: var(--left); border: 8px solid #e7ffff; border-color: #e7ffff transparent transparent #e7ffff; border-radius: 72% 0 0; filter: drop-shadow(0 0 7px #24cfff); animation: wave-roll var(--duration) var(--delay) ease-in-out infinite; }
+    :root[data-theme="rainfall"] .theme-fx .wave { display: none; }
 
     /* Inferno: a clean ember-lit card surrounded by falling cinders. */
     :root[data-theme="inferno"] .theme-fx { opacity: 1; }
@@ -120,20 +119,15 @@
 
     /* SVG theme art: precise silhouettes stay behind the readable combo UI. */
     .theme-art { display: none; position: absolute; pointer-events: none; overflow: visible; }
-    :root[data-theme="tsunami"] .theme-fx, :root[data-theme="inferno"] .theme-fx { z-index: 1; }
-    :root[data-theme="tsunami"] .combo-card, :root[data-theme="inferno"] .combo-card { z-index: 2; }
-    :root[data-theme="tsunami"] .combo-card { background: linear-gradient(180deg, rgba(185,247,255,.86), rgba(67,217,250,.72) 46%, rgba(9,111,203,.78)); }
+    :root[data-theme="rainfall"] .theme-fx, :root[data-theme="inferno"] .theme-fx { z-index: 1; }
+    :root[data-theme="rainfall"] .combo-card, :root[data-theme="inferno"] .combo-card { z-index: 2; }
     :root[data-theme="inferno"] .combo-card { background: radial-gradient(circle at 50% -20%, rgba(255,221,82,.86), rgba(255,106,36,.76) 39%, rgba(159,21,29,.84) 73%, rgba(48,8,12,.9) 100%); }
-    :root[data-theme="tsunami"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
+    :root[data-theme="rainfall"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
 
-    :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(650px, 108%); height: 165px; left: 50%; bottom: 26px; transform: translateX(-50%); filter: drop-shadow(0 5px 9px rgba(8,91,145,.34)); }
-    :root[data-theme="tsunami"] .wave-group { transform-box: fill-box; transform-origin: 50% 100%; animation: wave-idle 2.3s ease-in-out infinite; }
-    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); }
-    :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #f2ffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .96; }
-    :root[data-theme="tsunami"] .foam-dot { fill: #f5ffff; animation: foam-breathe 2.3s ease-in-out infinite; animation-delay: var(--delay); }
-    :root[data-theme="tsunami"] #combo.theme-burst .tsunami-art { animation: tsunami-burst 700ms ease-in-out both; filter: drop-shadow(0 0 28px rgba(55,216,255,.95)); }
+    :root[data-theme="rainfall"] .tsunami-art { display: none; }
 
     :root[data-theme="inferno"] .inferno-art { display: none; }
+    :root[data-theme="rainfall"] .theme-fx { z-index: 3; }
     /* Cinders pass in front like a real shower; the card remains legible behind their small gaps. */
     :root[data-theme="inferno"] .theme-fx { z-index: 3; }
     :root[data-theme="inferno"] .flame-unit { transform-box: fill-box; transform-origin: 50% 100%; }
@@ -158,6 +152,7 @@
     @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
     @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, -25px) rotate(0deg); } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 410px) rotate(var(--spin)); } }
     @keyframes meteor-shower { 0%, 5% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 10% { opacity: 1; } 38% { opacity: 1; } 55%, 100% { opacity: 0; transform: translate(-420px, 280px) rotate(145deg); } }
+    @keyframes rain-fall { 0%, 5% { opacity: 0; transform: translate(70px, -55px) rotate(28deg) scaleY(.7); } 10% { opacity: .92; } 45% { opacity: .82; } 58%, 100% { opacity: 0; transform: translate(-420px, 280px) rotate(28deg) scaleY(1); } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes wave-roll { 0%, 100% { transform: translateY(0) rotate(7deg) scaleX(1); } 50% { transform: translateY(-10px) rotate(3deg) scaleX(1.06); } }
     @keyframes wave-crash { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-34px) skewX(-4deg) scale(1.12,1.2); } 100% { transform: translateY(0) skewX(0) scale(1); } }
@@ -189,10 +184,10 @@
     :root[data-theme="sakura"] #combo.hiding .theme-fx { animation: petal-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     :root[data-theme="sakura"] #combo.hiding::before, :root[data-theme="sakura"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
 
-    :root[data-theme="tsunami"] #combo.hiding { animation: tsunami-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
-    :root[data-theme="tsunami"] #combo.hiding .combo-card { animation: tsunami-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
-    :root[data-theme="tsunami"] #combo.hiding .theme-fx { animation: wave-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
-    :root[data-theme="tsunami"] #combo.hiding::before, :root[data-theme="tsunami"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+    :root[data-theme="rainfall"] #combo.hiding { animation: tsunami-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="rainfall"] #combo.hiding .combo-card { animation: tsunami-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="rainfall"] #combo.hiding .theme-fx { animation: wave-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="rainfall"] #combo.hiding::before, :root[data-theme="rainfall"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
 
     :root[data-theme="inferno"] #combo.hiding { animation: inferno-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     :root[data-theme="inferno"] #combo.hiding .combo-card { animation: inferno-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
@@ -421,6 +416,22 @@
       <i class="meteor" style="--x:63%;--y:62%;--length:136px;--duration:5s;--delay:-3.8s"></i>
       <i class="meteor" style="--x:72%;--y:-8%;--length:92px;--duration:3.9s;--delay:-.5s"></i>
       <i class="meteor" style="--x:99%;--y:78%;--length:120px;--duration:4.7s;--delay:-2.7s"></i>
+      <!-- Rainfall: bright, layered diagonal drops across the whole scene. -->
+      <i class="rain-drop" style="--x:6%;--y:-32px;--length:44px;--duration:2.5s;--delay:-.2s"></i>
+      <i class="rain-drop" style="--x:16%;--y:35px;--width:3px;--length:30px;--duration:2.1s;--delay:-1.4s"></i>
+      <i class="rain-drop" style="--x:25%;--y:-58px;--length:52px;--duration:2.8s;--delay:-.9s"></i>
+      <i class="rain-drop" style="--x:34%;--y:74px;--width:3px;--length:34px;--duration:2.3s;--delay:-1.8s"></i>
+      <i class="rain-drop" style="--x:43%;--y:-18px;--length:48px;--duration:2.6s;--delay:-.5s"></i>
+      <i class="rain-drop" style="--x:51%;--y:112px;--width:3px;--length:31px;--duration:2.2s;--delay:-1.2s"></i>
+      <i class="rain-drop" style="--x:60%;--y:-42px;--length:55px;--duration:2.9s;--delay:-2s"></i>
+      <i class="rain-drop" style="--x:69%;--y:41px;--width:3px;--length:36px;--duration:2.4s;--delay:-.7s"></i>
+      <i class="rain-drop" style="--x:78%;--y:-66px;--length:50px;--duration:2.7s;--delay:-1.6s"></i>
+      <i class="rain-drop" style="--x:88%;--y:95px;--width:3px;--length:32px;--duration:2.1s;--delay:-.3s"></i>
+      <i class="rain-drop" style="--x:97%;--y:-22px;--length:47px;--duration:2.6s;--delay:-1.1s"></i>
+      <i class="rain-drop" style="--x:12%;--y:142px;--width:3px;--length:29px;--duration:2.2s;--delay:-1.9s"></i>
+      <i class="rain-drop" style="--x:38%;--y:155px;--length:43px;--duration:2.5s;--delay:-.6s"></i>
+      <i class="rain-drop" style="--x:66%;--y:137px;--width:3px;--length:33px;--duration:2.3s;--delay:-1.5s"></i>
+      <i class="rain-drop" style="--x:92%;--y:163px;--length:40px;--duration:2.7s;--delay:-2.2s"></i>
       <!-- Inferno: independent cinders raining around the card, never covering the text. -->
       <i class="fire-ember" style="--x:3%;--y:-12px;--size:12px;--trail:34px;--tilt:-8deg;--duration:3.8s;--delay:-.4s;--drift:28px"></i>
       <i class="fire-ember" style="--x:10%;--y:52px;--size:8px;--trail:22px;--tilt:7deg;--duration:4.5s;--delay:-2.3s;--drift:-22px"></i>
@@ -471,11 +482,11 @@
     let glitchTimer;
     let milestoneTimer;
     let themeBurstTimer;
-    const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
+    const validThemes = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
       sakura: ['#ffaad5', '#ff76b7', '#d978ff', '#ff8c8c', '#ff3d80'],
-      tsunami: ['#48f2bd', '#34dfff', '#378cff', '#766aff', '#c456ff'],
+      rainfall: ['#c8f3ff', '#92d9ff', '#568cff', '#546bce', '#a785ff'],
       inferno: ['#ffe04d', '#ffb32c', '#ff792e', '#ff4c32', '#ff244e'],
       luna: ['#d9dcff', '#91c9ff', '#a58bff', '#d977ff', '#ff70bd']
     };

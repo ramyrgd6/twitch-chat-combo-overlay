@@ -14,7 +14,7 @@ const CHANNEL = (process.env.TWITCH_CHANNEL || '').trim().replace(/^#/, '').toLo
 const COMBO_TIMEOUT_MS = numberSetting('COMBO_TIMEOUT_MS', 6500);
 const MIN_COMBO_COUNT = numberSetting('MIN_COMBO_COUNT', 2);
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
-const THEMES = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
+const THEMES = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna']);
 let overlaySettings = loadSettings();
 
 if (!CHANNEL) {
@@ -81,6 +81,8 @@ function broadcast(event) {
 function loadSettings() {
   try {
     const saved = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+    // Rename the original water theme without breaking an existing local choice.
+    if (saved.theme === 'tsunami') return { theme: 'rainfall' };
     return THEMES.has(saved.theme) ? { theme: saved.theme } : { theme: 'game' };
   } catch {
     return { theme: 'game' };

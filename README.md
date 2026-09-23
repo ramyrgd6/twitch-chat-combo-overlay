@@ -56,8 +56,8 @@ Open `http://localhost:3000/settings.html` in a normal browser to use the local 
 
 - **Game** — arcade gold, the default.
 - **Sakura** — a glass frame with drifting cherry-blossom petals.
-- **Tsunami** — a waterline frame with animated curling waves.
-- **Inferno** — a jagged charred frame with rising flame shards.
+- **Rainfall** — a storm-glass frame with bright diagonal rainfall.
+- **Inferno** — an ember-lit frame with diagonal cinders and fire comets.
 - **Luna** — a rounded midnight frame with a crescent moon and twinkling stars.
 
 Picking a theme saves it in a local `settings.json` file and immediately updates any open OBS overlay sources. That file, along with `.env` and `node_modules`, is excluded from Git so channel credentials and local preferences are never published.

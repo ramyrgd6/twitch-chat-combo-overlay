@@ -57,8 +57,8 @@
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
     /* After the entrance, keep the combo alive with a subtle, continuous shake. */
-    #combo.visible:not(.hiding):not(.glitch):not(.milestone-hit) .combo-card { animation: idle-pulse 2.35s ease-in-out infinite; }
-    #combo.visible:not(.hiding):not(.glitch).milestone-hit .combo-card { animation: milestone-hit 430ms steps(2, end) both; }
+    #combo.visible:not(.hiding):not(.glitch):not(.milestone-hit) .combo-card { animation: idle-pulse 2.8s ease-in-out infinite; }
+    #combo.visible:not(.hiding):not(.glitch).milestone-hit .combo-card { animation: milestone-hit 520ms steps(2, end) both; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -274,15 +274,17 @@
       100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
     }
     @keyframes idle-pulse {
-      0%, 100% { translate: 0 0; }
-      50% { translate: 0 -2px; }
+      0%, 100% { translate: 0 0; rotate: 0deg; }
+      25% { translate: -2px -5px; rotate: -.45deg; }
+      50% { translate: 2px -7px; rotate: .35deg; }
+      75% { translate: 3px -3px; rotate: .25deg; }
     }
     @keyframes milestone-hit {
       0%, 100% { translate: 0 0; filter: brightness(1); }
-      20% { translate: calc(-7px * var(--power)) 3px; filter: brightness(1.25); }
-      42% { translate: calc(7px * var(--power)) -3px; }
-      64% { translate: calc(-4px * var(--power)) 2px; }
-      82% { translate: calc(3px * var(--power)) -1px; }
+      18% { translate: calc(-15px * var(--power)) 5px; filter: brightness(1.45); }
+      38% { translate: calc(15px * var(--power)) -5px; }
+      58% { translate: calc(-9px * var(--power)) 3px; }
+      78% { translate: calc(6px * var(--power)) -2px; }
     }
     @keyframes count-pop {
       0% { transform: scale(1); filter: brightness(1); }

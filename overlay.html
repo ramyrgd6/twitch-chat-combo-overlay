@@ -52,7 +52,6 @@
     }
     #combo.visible { opacity: 1; }
     #combo.slam { animation: slam 520ms cubic-bezier(.12,.82,.16,1.04) both; }
-    #combo.rehit { animation: rehit 360ms cubic-bezier(.22,.85,.3,1.18) both; }
     #combo.slam::before { animation: flash 250ms ease-out both; }
     #combo.shake { animation-name: slam, shake; animation-duration: 520ms, 420ms; animation-timing-function: cubic-bezier(.12,.82,.16,1.04), ease-in-out; }
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
@@ -251,11 +250,6 @@
       68% { transform: translateX(-3px) skewX(0); }
       100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
     }
-    @keyframes rehit {
-      0% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.028); filter: brightness(1.1); }
-      100% { transform: scale(1); filter: brightness(1); }
-    }
     @keyframes shake {
       0%,100% { translate: 0 0; } 20% { translate: calc(-7px * var(--power)) 0; } 40% { translate: calc(7px * var(--power)) 0; } 60% { translate: calc(-3px * var(--power)) 0; } 80% { translate: calc(3px * var(--power)) 0; }
     }
@@ -297,7 +291,6 @@
     const count = document.querySelector('#count');
     let hideTimer;
     let glitchTimer;
-    let rehitTimer;
     const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
@@ -359,20 +352,17 @@
       combo.style.setProperty('--combo-color', intensity.color);
       combo.style.setProperty('--count-color', intensity.color);
       combo.classList.toggle('milestone', intensity.milestone);
-      combo.classList.remove('hiding', 'glitch', 'slam', 'shake', 'rehit');
-      void combo.offsetWidth; // restart CSS animations for every incoming repeat
-      combo.classList.add('visible');
-      if (wasVisible) {
-        combo.classList.add('rehit');
-        clearTimeout(rehitTimer);
-        rehitTimer = setTimeout(() => combo.classList.remove('rehit'), 380);
-      } else {
+      // An active combo keeps its existing animation/state. New repeats only
+      // update the displayed count and extend its lifetime.
+      if (!wasVisible) {
+        combo.classList.remove('hiding', 'glitch', 'slam', 'shake');
+        void combo.offsetWidth;
+        combo.classList.add('visible');
         combo.classList.add('glitch', 'slam');
         if (intensity.shake) combo.classList.add('shake');
+        clearTimeout(glitchTimer);
+        glitchTimer = setTimeout(() => combo.classList.remove('glitch'), 350);
       }
-
-      clearTimeout(glitchTimer);
-      glitchTimer = setTimeout(() => combo.classList.remove('glitch'), 350);
 
       clearTimeout(hideTimer);
       // Use the server's real setting so the display always expires in sync.
@@ -382,9 +372,8 @@
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
-      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'rehit');
+      combo.classList.remove('visible', 'glitch', 'slam', 'shake');
       clearTimeout(glitchTimer);
-      clearTimeout(rehitTimer);
       combo.classList.add('hiding');
       setTimeout(() => combo.classList.remove('hiding'), 1100);
     }

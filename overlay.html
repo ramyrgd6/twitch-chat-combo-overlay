@@ -72,7 +72,7 @@
     .theme-fx i { position: absolute; display: block; }
 
     /* Sakura: a soft glass card and drifting cherry-blossom petals. */
-    :root[data-theme="sakura"] .theme-fx { opacity: 1; }
+    :root[data-theme="sakura"] .theme-fx { opacity: 1; z-index: 2; }
     :root[data-theme="sakura"] .combo-card { border-radius: 48px 10px 48px 10px; clip-path: none; background: linear-gradient(115deg, #fff5fa 0%, #ffd0e5 45%, #f88fbe 100%); border: 4px solid white; border-bottom: 7px solid #d73a83; box-shadow: 0 12px 0 #8d285b, 0 0 30px #ff9acb; }
     :root[data-theme="sakura"] #message { color: #8d2257; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #ffd3e5; }
     :root[data-theme="sakura"] .label { color: white; background: #d73a83; border-color: white; box-shadow: 3px 3px 0 #8d285b; }
@@ -81,9 +81,9 @@
     :root[data-theme="sakura"] .theme-fx .fx-b { width: 23px; height: 31px; top: -55px; left: 26%; border-radius: 90% 10% 90% 10%; background: #ffd4e8; transform: rotate(48deg); box-shadow: -40px 86px #ff85be, 30px 51px #ffc4e0, 82px 142px #ff9dcc, 140px 74px #ffe0ef; animation: petals 5.4s -2.7s linear infinite; }
     .theme-fx .petal { display: none; }
     :root[data-theme="sakura"] .theme-fx .fx-a, :root[data-theme="sakura"] .theme-fx .fx-b { display: none; }
-    :root[data-theme="sakura"] .theme-fx .petal { display: block; width: var(--size); height: calc(var(--size) * .72); top: -30px; left: var(--x); border-radius: 90% 10% 90% 10%; background: var(--petal-color, #ff9dcc); box-shadow: 0 0 5px rgba(255,255,255,.45); animation: sakura-rain var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="sakura"] .theme-fx .petal { display: block; width: calc(var(--size) * 1.35); height: var(--size); top: -30px; left: var(--x); border-radius: 90% 10% 90% 10%; background: var(--petal-color, #ff9dcc); box-shadow: 0 0 9px rgba(255,255,255,.72); animation: sakura-rain var(--duration) var(--delay) linear infinite; }
     .theme-fx .meteor { display: none; }
-    :root[data-theme="luna"] .theme-fx .meteor { display: block; width: var(--length); height: 3px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #8a9cff 38%, #fff 82%, transparent); box-shadow: 0 0 8px #b8c5ff, 0 0 17px #7687ff; animation: meteor-shower var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="luna"] .theme-fx .meteor { display: block; width: calc(var(--length) * 1.35); height: 5px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #6f86ff 28%, #bdc8ff 55%, #fff 82%, transparent); box-shadow: 0 0 12px #d4dcff, 0 0 28px #7687ff; animation: meteor-shower var(--duration) var(--delay) linear infinite; }
 
     /* Tsunami: a rounded waterline panel with bright curling waves. */
     :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
@@ -104,18 +104,18 @@
     :root[data-theme="inferno"] .theme-fx .fx-b { width: 120px; height: 115px; bottom: -8px; right: 10%; background: linear-gradient(to top, #ff4d2c, #ffbd2d); clip-path: polygon(0 100%, 20% 33%, 34% 65%, 52% 0, 68% 56%, 83% 26%, 100% 100%); filter: drop-shadow(0 0 13px #ff681e); animation: flames 1.05s .25s ease-in-out infinite alternate-reverse; }
 
     /* Luna: a midnight capsule with a crescent moon and orbiting stars. */
-    :root[data-theme="luna"] .theme-fx { opacity: 1; }
+    :root[data-theme="luna"] .theme-fx { opacity: 1; z-index: 2; }
     :root[data-theme="luna"] .combo-card { border-radius: 54px; clip-path: none; background: radial-gradient(circle at 17% 20%, #7980be 0%, transparent 28%), radial-gradient(circle at 80% 100%, #553e9c, transparent 42%), #171a4d; border: 3px solid #e4e7ff; border-bottom: 7px solid #7774c5; box-shadow: 0 12px 0 #0a0b28, 0 0 30px #a89cff; }
     :root[data-theme="luna"] #message { color: #f4f4ff; -webkit-text-stroke: 3px #26265f; text-shadow: 3px 4px 0 #101035; }
     :root[data-theme="luna"] .label { color: #24255e; background: #e9ebff; border-color: #aaa9ef; box-shadow: 3px 3px 0 #12123c; }
     :root[data-theme="luna"] .message-wrap { border-color: rgba(225,228,255,.25); }
-    :root[data-theme="luna"] .theme-fx .fx-a { width: 90px; height: 90px; top: -8px; left: 6%; border-radius: 50%; background: #eef0ff; box-shadow: inset -24px -5px 0 #55518c, 175px 15px 0 -42px #fff, 255px 60px 0 -43px #d8ddff, 410px -5px 0 -44px #fff, 526px 50px 0 -43px #d8ddff; filter: drop-shadow(0 0 16px #b8bfff); animation: lunar 4.5s ease-in-out infinite; }
+    :root[data-theme="luna"] .theme-fx .fx-a { width: 90px; height: 90px; top: -8px; left: 6%; border-radius: 50%; background: #eef0ff; box-shadow: inset -24px -5px 0 #55518c, 175px 15px 0 -42px #fff, 255px 60px 0 -43px #d8ddff, 410px -5px 0 -44px #fff, 526px 50px 0 -43px #d8ddff; filter: drop-shadow(0 0 16px #b8bfff); }
     :root[data-theme="luna"] .theme-fx .fx-b { width: 5px; height: 5px; top: 34px; right: 12%; border-radius: 50%; background: white; box-shadow: -65px 40px #c5c8ff, -150px -22px #fff, -245px 52px #b8c7ff, -335px -10px #fff; animation: twinkle 1.6s ease-in-out infinite alternate; }
 
 
     @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
-    @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, -25px) rotate(0deg); } 9% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 300px) rotate(var(--spin)); } }
-    @keyframes meteor-shower { 0%, 7% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 12% { opacity: 1; } 35% { opacity: .9; } 49%, 100% { opacity: 0; transform: translate(-360px, 240px) rotate(145deg); } }
+    @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, -25px) rotate(0deg); } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 410px) rotate(var(--spin)); } }
+    @keyframes meteor-shower { 0%, 5% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 10% { opacity: 1; } 38% { opacity: 1; } 55%, 100% { opacity: 0; transform: translate(-420px, 280px) rotate(145deg); } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }

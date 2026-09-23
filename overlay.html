@@ -58,7 +58,7 @@
     #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
     /* After the entrance, keep the combo alive with a subtle, continuous shake. */
     #combo.visible:not(.hiding):not(.glitch):not(.milestone-hit) .combo-card { animation: idle-pulse 2.8s ease-in-out infinite; }
-    #combo.visible:not(.hiding):not(.glitch).milestone-hit .combo-card { animation: milestone-hit 520ms steps(2, end) both; }
+    #combo.visible:not(.hiding):not(.glitch).milestone-hit .combo-card { animation: milestone-hit 520ms ease-in-out both; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -120,24 +120,20 @@
     :root[data-theme="tsunami"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
 
     :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(960px, 130%); height: 300px; left: 50%; bottom: -105px; transform: translateX(-50%); filter: drop-shadow(0 0 14px rgba(38,211,255,.52)); }
-    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); transform-origin: 50% 100%; }
-    :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #eaffff; stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; opacity: .95; }
-    :root[data-theme="tsunami"] .foam { fill: #fff; opacity: .88; animation: foam-bob 1.9s ease-in-out infinite alternate; }
-    :root[data-theme="tsunami"] .splash { fill: #dfffff; opacity: 0; transform-box: fill-box; transform-origin: center bottom; }
-    :root[data-theme="tsunami"] #combo.impact .wave-body { animation: wave-crash 540ms cubic-bezier(.12,.8,.18,1.05) both; }
-    :root[data-theme="tsunami"] #combo.impact .splash { animation: splash-pop 700ms cubic-bezier(.12,.75,.28,1) both; animation-delay: var(--delay); }
-    :root[data-theme="tsunami"] #combo.milestone .tsunami-art { transform: translateX(-50%) scale(calc(1 + (var(--power) - 1) * .9)); filter: drop-shadow(0 0 26px rgba(69,224,255,.9)); }
-    :root[data-theme="tsunami"] #combo.milestone::before { background: radial-gradient(ellipse, rgba(46,193,255,.68), transparent 68%); }
+    :root[data-theme="tsunami"] .wave-group { transform-box: fill-box; transform-origin: 50% 100%; animation: wave-idle 2.3s ease-in-out infinite; }
+    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); }
+    :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #f2ffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .96; }
+    :root[data-theme="tsunami"] .foam-dot { fill: #f5ffff; animation: foam-breathe 2.3s ease-in-out infinite; animation-delay: var(--delay); }
+    :root[data-theme="tsunami"] #combo.theme-burst .tsunami-art { animation: tsunami-burst 700ms ease-in-out both; filter: drop-shadow(0 0 28px rgba(55,216,255,.95)); }
 
     :root[data-theme="inferno"] .inferno-art { display: block; width: min(900px, 123%); height: 290px; left: 50%; bottom: -98px; transform: translateX(-50%); filter: drop-shadow(0 0 16px rgba(255,79,25,.58)); }
-    :root[data-theme="inferno"] .flame-back { fill: url(#flame-deep); transform-origin: 50% 100%; animation: flame-idle-a 2.15s -.3s ease-in-out infinite alternate; }
-    :root[data-theme="inferno"] .flame-mid { fill: url(#flame-mid); transform-origin: 50% 100%; animation: flame-idle-b 1.63s -.9s ease-in-out infinite alternate; }
-    :root[data-theme="inferno"] .flame-core { fill: url(#flame-core); transform-origin: 50% 100%; animation: flame-idle-c 1.28s -.5s ease-in-out infinite alternate; }
-    :root[data-theme="inferno"] .ember { fill: #ffe99b; opacity: 0; transform-box: fill-box; transform-origin: center; }
-    :root[data-theme="inferno"] #combo.impact .inferno-art { animation: flame-flare 520ms cubic-bezier(.12,.8,.2,1.08) both; filter: drop-shadow(0 0 30px rgba(255,104,31,.95)); }
-    :root[data-theme="inferno"] #combo.impact .ember { animation: ember-rise 860ms ease-out both; animation-delay: var(--delay); }
-    :root[data-theme="inferno"] #combo.milestone .inferno-art { transform: translateX(-50%) scale(calc(1 + (var(--power) - 1))); filter: drop-shadow(0 0 34px rgba(255,93,28,1)); }
-    :root[data-theme="inferno"] #combo.milestone::before { background: radial-gradient(ellipse, rgba(255,104,25,.66), transparent 68%); }
+    :root[data-theme="inferno"] .flame-unit { transform-box: fill-box; transform-origin: 50% 100%; }
+    :root[data-theme="inferno"] .flame-one { animation: flame-flicker-one 1.1s -.2s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-two { animation: flame-flicker-two 1.4s -.8s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-three { animation: flame-flicker-three 1.2s -.5s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-shape { fill: url(#flame-gradient); }
+    :root[data-theme="inferno"] .ember { fill: #ffd45b; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ember-idle 2.4s ease-out infinite; animation-delay: var(--delay); }
+    :root[data-theme="inferno"] #combo.theme-burst .inferno-art { animation: inferno-burst 700ms ease-in-out both; filter: drop-shadow(0 0 34px rgba(255,104,31,.98)); }
 
     /* Luna: a midnight capsule with a crescent moon and orbiting stars. */
     :root[data-theme="luna"] .theme-fx { opacity: 1; z-index: 2; }
@@ -157,6 +153,9 @@
     @keyframes wave-crash { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-34px) skewX(-4deg) scale(1.12,1.2); } 100% { transform: translateY(0) skewX(0) scale(1); } }
     @keyframes foam-bob { to { transform: translate(4px,-6px) scale(1.08); opacity: 1; } }
     @keyframes splash-pop { 0% { opacity: 0; transform: translate(0,0) scale(.3); } 22% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.8); } }
+    @keyframes wave-idle { 0%,100% { translate: 0 0; scale: 1; } 50% { translate: 0 -8px; scale: 1.04; } }
+    @keyframes foam-breathe { 0%,100% { opacity: .7; } 50% { opacity: 1; } }
+    @keyframes tsunami-burst { 0%,100% { transform: translateX(-50%) translateY(0) scale(1); } 48% { transform: translateX(-50%) translateY(-22px) skewX(-2deg) scale(1.1,1.13); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes flame-flicker { 0% { transform: translateY(0) scaleX(1) skewX(-2deg); } 100% { transform: translateY(-18px) scaleX(.82) skewX(5deg); filter: drop-shadow(0 0 20px #ff8126); } }
     @keyframes flame-idle-a { to { transform: translateY(-3px) scaleX(.99) skewX(-1deg); opacity: .94; } }
@@ -164,6 +163,11 @@
     @keyframes flame-idle-c { to { transform: translateY(-8px) scaleX(.94) skewX(-2deg); filter: brightness(1.17); } }
     @keyframes flame-flare { 0% { transform: translateX(-50%) scale(1); } 42% { transform: translateX(-50%) translateY(-30px) scale(1.18,1.34); } 100% { transform: translateX(-50%) scale(1); } }
     @keyframes ember-rise { 0% { opacity: 0; transform: translate(0,8px) scale(.35); } 18% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.1); } }
+    @keyframes flame-flicker-one { to { scale: 1 1.08; skew: -2deg 0; } }
+    @keyframes flame-flicker-two { to { scale: .97 1.08; skew: 1.5deg 0; } }
+    @keyframes flame-flicker-three { to { scale: 1.03 1.08; skew: -1deg 0; } }
+    @keyframes ember-idle { 0% { opacity: 0; translate: 0 0; } 15% { opacity: .9; } 100% { opacity: 0; translate: var(--drift-x) -40px; } }
+    @keyframes inferno-burst { 0%,100% { transform: translateX(-50%) scale(1); } 48% { transform: translateX(-50%) translateY(-18px) scale(1.11,1.18); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
     @keyframes twinkle { to { transform: scale(2.2); opacity: .35; } }
 
@@ -324,8 +328,8 @@
     }
     @keyframes count-pop {
       0% { transform: scale(1); filter: brightness(1); }
-      34% { transform: scale(1.38) rotate(-3deg); filter: brightness(1.65) drop-shadow(0 0 12px var(--count-color)); }
-      62% { transform: scale(.93) rotate(1deg); }
+      38% { transform: scale(1.14) rotate(-1deg); filter: brightness(1.24) drop-shadow(0 0 8px var(--count-color)); }
+      68% { transform: scale(.98) rotate(.4deg); }
       100% { transform: scale(1) rotate(0); filter: brightness(1); }
     }
     @keyframes shake {
@@ -356,37 +360,29 @@
     <div class="theme-fx" aria-hidden="true">
       <svg class="theme-art tsunami-art" viewBox="0 0 900 320" aria-hidden="true">
         <defs>
-          <linearGradient id="water-gradient" x1="0" y1="1" x2="0.55" y2="0">
-            <stop offset="0" stop-color="#043a83"/><stop offset=".48" stop-color="#087fc1"/><stop offset=".78" stop-color="#2ee2ef"/><stop offset="1" stop-color="#dfffff"/>
+          <linearGradient id="water-gradient" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#0a4d73"/><stop offset=".54" stop-color="#2bb0d9"/><stop offset="1" stop-color="#aef1ff"/>
           </linearGradient>
         </defs>
-        <!-- A cresting curl on the right, with a deep rolling base under the text. -->
-        <path class="wave-body" d="M0 301 C74 239 146 270 214 237 C299 196 345 241 410 202 C492 153 538 205 588 147 C627 101 608 44 548 43 C504 42 482 72 496 105 C510 137 550 129 556 101 C562 72 542 67 530 79 C538 38 585 14 632 27 C701 46 726 114 691 178 C658 238 594 257 535 260 C437 265 371 285 283 286 C174 288 88 274 0 320 Z"/>
-        <path class="wave-lip" d="M284 238 C355 194 408 221 470 181 C537 138 583 169 620 115 C644 80 632 48 605 37 C563 20 527 44 530 75 C533 97 556 104 568 86"/>
-        <g class="foam">
-          <circle cx="308" cy="223" r="8"/><circle cx="334" cy="208" r="5"/><circle cx="370" cy="204" r="10"/><circle cx="407" cy="194" r="6"/><circle cx="450" cy="179" r="9"/><circle cx="489" cy="160" r="5"/><circle cx="626" cy="93" r="7"/>
-        </g>
-        <g class="splash">
-          <circle cx="575" cy="70" r="8" style="--delay:0ms;--drift-x:-35px;--drift-y:-93px"/><circle cx="604" cy="86" r="5" style="--delay:65ms;--drift-x:22px;--drift-y:-118px"/><circle cx="641" cy="121" r="7" style="--delay:120ms;--drift-x:48px;--drift-y:-78px"/><circle cx="540" cy="112" r="4" style="--delay:165ms;--drift-x:-57px;--drift-y:-70px"/>
+        <g class="wave-group">
+          <!-- Three gentle crest humps, ending in a small curling lip. -->
+          <path class="wave-body" d="M0 320 L0 238 C72 208 115 250 186 222 C253 196 296 229 360 194 C427 158 476 211 543 169 C593 137 611 89 580 62 C551 37 510 52 507 84 C505 105 523 115 540 105 C532 132 505 145 480 133 C448 118 433 83 451 53 C489 -7 579 -6 634 39 C689 84 691 156 652 207 C607 267 553 271 486 267 C399 262 337 282 258 275 C169 267 88 277 0 320 Z"/>
+          <path class="wave-lip" d="M0 238 C72 208 115 250 186 222 C253 196 296 229 360 194 C427 158 476 211 543 169 C593 137 611 89 580 62 C551 37 510 52 507 84 C505 105 523 115 540 105"/>
+          <g>
+            <circle class="foam-dot" cx="70" cy="228" r="3" style="--delay:-.1s"/><circle class="foam-dot" cx="108" cy="236" r="4" style="--delay:-.5s"/><circle class="foam-dot" cx="150" cy="224" r="3.5" style="--delay:-1s"/><circle class="foam-dot" cx="210" cy="213" r="5" style="--delay:-.25s"/><circle class="foam-dot" cx="259" cy="205" r="3" style="--delay:-.8s"/><circle class="foam-dot" cx="317" cy="208" r="4" style="--delay:-1.3s"/><circle class="foam-dot" cx="374" cy="184" r="5" style="--delay:-.4s"/><circle class="foam-dot" cx="420" cy="176" r="3.5" style="--delay:-1.1s"/><circle class="foam-dot" cx="476" cy="192" r="4" style="--delay:-.65s"/><circle class="foam-dot" cx="530" cy="171" r="3" style="--delay:-1.5s"/><circle class="foam-dot" cx="577" cy="138" r="5" style="--delay:-.2s"/><circle class="foam-dot" cx="600" cy="104" r="3.5" style="--delay:-.95s"/>
+          </g>
         </g>
       </svg>
       <svg class="theme-art inferno-art" viewBox="0 0 900 320" aria-hidden="true">
         <defs>
-          <linearGradient id="flame-deep" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#59070d"/><stop offset=".45" stop-color="#d6221e"/><stop offset="1" stop-color="#ff7a21"/></linearGradient>
-          <linearGradient id="flame-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e52c17"/><stop offset=".62" stop-color="#ff8b20"/><stop offset="1" stop-color="#ffd33f"/></linearGradient>
-          <linearGradient id="flame-core" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7921"/><stop offset=".58" stop-color="#ffe14d"/><stop offset="1" stop-color="#fff8cc"/></linearGradient>
+          <linearGradient id="flame-gradient" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8a1c0e"/><stop offset=".36" stop-color="#ff5a1f"/><stop offset=".7" stop-color="#ffb020"/><stop offset="1" stop-color="#fff3b0"/></linearGradient>
         </defs>
-        <!-- Three overlapping flame silhouettes make a bonfire, not a flat strip. -->
-        <path class="flame-back" d="M60 320 C38 244 94 214 110 151 C124 95 98 75 130 23 C134 89 190 111 175 176 C204 128 247 101 246 49 C292 113 302 169 272 220 C310 180 353 161 365 92 C397 164 412 215 382 267 C436 235 481 185 477 119 C537 183 547 235 508 320 Z"/>
-        <path class="flame-back" d="M407 320 C387 248 440 211 448 151 C457 97 433 76 461 31 C469 90 510 118 495 170 C528 131 565 103 563 55 C610 113 625 177 595 221 C634 180 669 159 677 102 C710 165 720 227 690 320 Z"/>
-        <path class="flame-back" d="M620 320 C614 256 666 220 677 171 C691 108 664 86 695 39 C702 102 751 121 738 182 C772 141 806 115 808 67 C851 126 864 191 832 237 C858 212 878 180 883 140 C911 203 910 270 888 320 Z"/>
-        <path class="flame-mid" d="M143 320 C134 257 190 221 189 160 C221 208 235 235 218 273 C251 235 276 201 277 157 C317 214 323 271 299 320 Z"/>
-        <path class="flame-mid" d="M394 320 C385 257 434 218 435 151 C475 203 487 241 469 274 C504 233 532 197 532 149 C575 214 580 274 556 320 Z"/>
-        <path class="flame-mid" d="M653 320 C648 261 692 222 699 163 C733 209 744 244 728 279 C758 240 782 204 785 158 C825 218 831 271 808 320 Z"/>
-        <path class="flame-core" d="M220 320 C218 271 247 239 243 193 C272 233 280 263 266 287 C286 260 300 234 298 201 C328 243 333 283 317 320 Z"/>
-        <path class="flame-core" d="M480 320 C476 270 510 235 507 183 C540 230 549 264 533 290 C557 258 570 225 569 188 C605 237 608 279 590 320 Z"/>
+        <!-- Three separate, asymmetric curved flame tongues. -->
+        <g class="flame-unit flame-one"><path class="flame-shape" d="M118 320 C97 270 122 238 144 206 C166 174 145 147 158 103 C185 137 207 171 195 215 C218 185 236 153 229 115 C267 157 284 211 259 253 C286 232 304 205 305 173 C339 220 337 278 315 320 Z"/></g>
+        <g class="flame-unit flame-two"><path class="flame-shape" d="M361 320 C337 254 380 224 398 177 C418 126 391 103 414 53 C426 116 464 144 448 197 C479 161 502 126 494 83 C538 137 551 201 522 247 C557 215 580 177 579 132 C624 191 632 267 599 320 Z"/></g>
+        <g class="flame-unit flame-three"><path class="flame-shape" d="M638 320 C621 267 655 233 673 194 C693 151 671 123 689 79 C705 135 738 158 725 205 C751 176 772 144 768 107 C807 157 817 210 793 252 C822 225 844 192 847 151 C880 207 879 272 856 320 Z"/></g>
         <g class="ember">
-          <circle cx="247" cy="151" r="6" style="--delay:0ms;--drift-x:-22px;--drift-y:-100px"/><circle cx="315" cy="206" r="4" style="--delay:90ms;--drift-x:29px;--drift-y:-130px"/><circle cx="522" cy="141" r="7" style="--delay:45ms;--drift-x:18px;--drift-y:-117px"/><circle cx="654" cy="185" r="4" style="--delay:150ms;--drift-x:-33px;--drift-y:-98px"/><circle cx="743" cy="123" r="6" style="--delay:120ms;--drift-x:39px;--drift-y:-140px"/>
+          <circle cx="200" cy="103" r="2.3" style="--delay:-.3s;--drift-x:-12px"/><circle cx="275" cy="157" r="2" style="--delay:-1.5s;--drift-x:14px"/><circle cx="462" cy="48" r="2.5" style="--delay:-.9s;--drift-x:10px"/><circle cx="551" cy="129" r="2.1" style="--delay:-2s;--drift-x:-15px"/><circle cx="708" cy="72" r="2.4" style="--delay:-.6s;--drift-x:13px"/><circle cx="791" cy="144" r="2" style="--delay:-1.7s;--drift-x:-10px"/>
         </g>
       </svg>
       <i class="fx-a"></i><i class="fx-b"></i>
@@ -438,7 +434,7 @@
     let hideTimer;
     let glitchTimer;
     let milestoneTimer;
-    let impactTimer;
+    let themeBurstTimer;
     const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
@@ -503,14 +499,14 @@
       combo.style.setProperty('--combo-color', intensity.color);
       combo.style.setProperty('--count-color', intensity.color);
       combo.classList.toggle('milestone', intensity.milestone);
-      // Theme-only impact effects replay on every increment without touching
-      // the continuous core combo animation.
-      combo.classList.remove('impact');
-      void combo.offsetWidth;
-      combo.classList.add('impact');
-      clearTimeout(impactTimer);
-      impactTimer = setTimeout(() => combo.classList.remove('impact'), 900);
       if ([5, 10, 25, 50].includes(event.count)) {
+        // Only milestones flare the theme art; ordinary increments leave its
+        // continuous idle loop completely uninterrupted.
+        combo.classList.remove('theme-burst');
+        void combo.offsetWidth;
+        combo.classList.add('theme-burst');
+        clearTimeout(themeBurstTimer);
+        themeBurstTimer = setTimeout(() => combo.classList.remove('theme-burst'), 720);
         combo.classList.remove('milestone-hit');
         void combo.offsetWidth;
         combo.classList.add('milestone-hit');
@@ -537,10 +533,10 @@
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
-      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit', 'impact');
+      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit', 'theme-burst');
       clearTimeout(glitchTimer);
       clearTimeout(milestoneTimer);
-      clearTimeout(impactTimer);
+      clearTimeout(themeBurstTimer);
       combo.classList.add('hiding');
       setTimeout(() => combo.classList.remove('hiding'), 1100);
     }

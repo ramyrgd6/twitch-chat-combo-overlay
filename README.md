@@ -48,7 +48,7 @@ Use the same dimensions as your scene (for example, 1920 × 1080). The page has 
 
 To preview a different fade time in the browser source only, append `?timeout=6000` to its URL. Normally this should match `COMBO_TIMEOUT_MS`.
 
-To preview the overlay design without Twitch chat, temporarily set the OBS source URL to `http://localhost:3000/overlay.html?preview=1`. It will play a repeating sample combo. Remove `?preview=1` before going live.
+To preview the overlay design without Twitch chat, temporarily set the OBS source URL to `http://localhost:3000/overlay.html?preview=1`. It plays one sample combo from x2 to x15, pauses briefly, then demonstrates the exit burst. Remove `?preview=1` before going live.
 
 ## Control Room and themes
 

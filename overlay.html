@@ -70,8 +70,9 @@
       opacity: 0;
     }
     /* The outgoing message breaks into its own words when a combo expires. */
-    #message-burst { position: absolute; inset: 0; z-index: 8; pointer-events: none; overflow: visible; }
-    .message-shard { position: absolute; left: 50%; top: 50%; max-width: 46vw; overflow: hidden; padding: 5px 10px 7px; border: 2px solid rgba(255,255,255,.92); border-radius: 10px; background: color-mix(in srgb, var(--combo-color) 78%, #080b18); box-shadow: 0 0 18px var(--combo-color), 4px 5px 0 var(--ink); color: #fff; font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; font-size: clamp(29px, 4.5vw, 82px); font-style: italic; font-weight: 900; line-height: 1; letter-spacing: .03em; text-align: center; text-overflow: ellipsis; white-space: nowrap; -webkit-text-stroke: 3px var(--ink); text-shadow: 3px 4px 0 var(--ink), 0 0 20px var(--combo-color); animation: message-explode 1100ms cubic-bezier(.08,.74,.2,1) var(--delay) both; }
+    #message-burst { position: fixed; inset: 0; z-index: 10; pointer-events: none; overflow: visible; }
+    #message-burst.bursting::before { content: ''; position: absolute; inset: 50%; width: 16vw; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--combo-color) 78%, white) 0%, color-mix(in srgb, var(--combo-color) 38%, transparent) 35%, transparent 72%); animation: burst-flash 720ms ease-out both; }
+    .message-shard { position: absolute; left: 50%; top: 50%; max-width: 46vw; overflow: hidden; padding: 6px 12px 8px; border: 3px solid rgba(255,255,255,.96); border-radius: 11px; background: color-mix(in srgb, var(--combo-color) 82%, #060914); box-shadow: 0 0 24px var(--combo-color), 5px 6px 0 var(--ink); color: #fff; font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; font-size: clamp(32px, 5vw, 90px); font-style: italic; font-weight: 900; line-height: 1; letter-spacing: .03em; text-align: center; text-overflow: ellipsis; white-space: nowrap; -webkit-text-stroke: 3px var(--ink); text-shadow: 3px 4px 0 var(--ink), 0 0 24px var(--combo-color); animation: message-explode 1250ms cubic-bezier(.08,.74,.2,1) var(--delay) both; }
     .theme-fx { position: absolute; inset: -115px -110px; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease; }
     .theme-fx i { position: absolute; display: block; }
 
@@ -363,7 +364,8 @@
     }
     @keyframes debris { 0%, 45% { opacity: .8; transform: scale(.55); } 100% { opacity: 0; transform: translateY(108px) scale(1.95) rotate(13deg); } }
     @keyframes fragments { 0%, 35% { opacity: 0; } 55% { opacity: .85; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-44px, 92px) rotate(-11deg) scale(1.4); } }
-    @keyframes message-explode { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.12) rotate(0deg); } 9% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(0deg); } 26% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--burst-x)), calc(-50% + var(--burst-y))) rotate(var(--burst-rotate)) scale(.7); } }
+    @keyframes burst-flash { 0% { opacity: 0; scale: .1; } 18% { opacity: .9; scale: 1.1; } 100% { opacity: 0; scale: 3.6; } }
+    @keyframes message-explode { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.08) rotate(0deg); } 8% { opacity: 1; transform: translate(-50%, -50%) scale(1.16) rotate(0deg); } 24% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--burst-x)), calc(-50% + var(--burst-y))) rotate(var(--burst-rotate)) scale(.74); } }
   </style>
 </head>
 <body>
@@ -486,8 +488,8 @@
       <div class="message-wrap"><div id="message"></div></div>
     </section>
     <div id="count"></div>
-    <div id="message-burst" aria-hidden="true"></div>
   </main>
+  <div id="message-burst" aria-hidden="true"></div>
   <script>
     // These must match the backend's defaults unless you add settings via URL.
     const options = new URLSearchParams(location.search);
@@ -559,6 +561,7 @@
       renderMessage(event.message, event.emotes);
       lastMessage = event.message;
       messageBurst.replaceChildren();
+      messageBurst.classList.remove('bursting');
       count.textContent = `x${event.count}`;
       count.classList.remove('count-pop');
       void count.offsetWidth; // replay the count punch on every new repeat
@@ -605,10 +608,12 @@
         [-340, -195, -30], [-160, -285, -18], [54, -300, 10],
         [265, -205, 27], [365, -52, 38], [-385, -40, -34],
         [-300, 175, -25], [-105, 285, -12], [115, 290, 15],
-        [315, 170, 31], [-30, -115, -5], [188, -78, 19]
+        [315, 170, 31], [-30, -115, -5], [188, -78, 19],
+        [-420, 82, -42], [430, 95, 44], [-12, 350, -4], [18, -365, 5]
       ];
       const shardText = text.length > 24 ? `${text.slice(0, 24)}…` : text;
       messageBurst.replaceChildren();
+      messageBurst.classList.add('bursting');
       directions.forEach(([x, y, rotation], index) => {
         const shard = document.createElement('span');
         shard.className = 'message-shard';
@@ -631,7 +636,7 @@
       clearTimeout(milestoneTimer);
       clearTimeout(themeBurstTimer);
       combo.classList.add('hiding');
-      setTimeout(() => { combo.classList.remove('hiding'); messageBurst.replaceChildren(); }, 1300);
+      setTimeout(() => { combo.classList.remove('hiding'); messageBurst.replaceChildren(); messageBurst.classList.remove('bursting'); }, 1500);
     }
 
     function connect() {

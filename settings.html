@@ -16,6 +16,7 @@
     .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; }
     .theme { min-height: 160px; padding: 18px; border: 2px solid transparent; border-radius: 18px; color: inherit; text-align: left; cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
     .theme:hover { transform: translateY(-4px); }
+    .theme:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     .theme.selected { border-color: white; box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme) 35%, transparent), 0 14px 28px rgba(0,0,0,.26); }
     .theme span { display: block; margin-top: 44px; color: rgba(255,255,255,.72); font-size: 13px; }
     .theme strong { font-size: 24px; letter-spacing: -.04em; }
@@ -38,11 +39,11 @@
 
     <h2>Choose your theme</h2>
     <section class="themes" aria-label="Overlay themes">
-      <button class="theme game" data-theme="game"><strong>Game</strong><span>Arcade gold · the original</span></button>
-      <button class="theme sakura" data-theme="sakura"><strong>Sakura</strong><span>Falling petals · glass frame</span></button>
-      <button class="theme rainfall" data-theme="rainfall"><strong>Rainfall</strong><span>Diagonal rain · storm-glass frame</span></button>
-      <button class="theme inferno" data-theme="inferno"><strong>Inferno</strong><span>Fire comets · ember-lit frame</span></button>
-      <button class="theme luna" data-theme="luna"><strong>Luna</strong><span>Crescent moon · orbiting stars</span></button>
+      <button class="theme game" data-theme="game" aria-pressed="false"><strong>Game</strong><span>Arcade gold · the original</span></button>
+      <button class="theme sakura" data-theme="sakura" aria-pressed="false"><strong>Sakura</strong><span>Falling petals · glass frame</span></button>
+      <button class="theme rainfall" data-theme="rainfall" aria-pressed="false"><strong>Rainfall</strong><span>Diagonal rain · storm-glass frame</span></button>
+      <button class="theme inferno" data-theme="inferno" aria-pressed="false"><strong>Inferno</strong><span>Fire comets · ember-lit frame</span></button>
+      <button class="theme luna" data-theme="luna" aria-pressed="false"><strong>Luna</strong><span>Crescent moon · orbiting stars</span></button>
     </section>
 
     <div class="footer">
@@ -55,7 +56,11 @@
     const saved = document.querySelector('#saved');
 
     function select(theme) {
-      cards.forEach(card => card.classList.toggle('selected', card.dataset.theme === theme));
+      cards.forEach(card => {
+        const selected = card.dataset.theme === theme;
+        card.classList.toggle('selected', selected);
+        card.setAttribute('aria-pressed', String(selected));
+      });
     }
     async function save(theme) {
       const response = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ theme }) });

@@ -623,6 +623,7 @@
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
+      clearTimeout(hideTimer);
       explodeMessage();
       combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit', 'theme-burst');
       clearTimeout(glitchTimer);
@@ -652,10 +653,11 @@
       let previewCount = 2;
       const preview = () => {
         const isFinalPreview = previewCount === 15;
-        // Preview plays one uninterrupted combo, then pauses at x15 for easy
-        // visual inspection instead of looping back to x2.
+        // Preview plays one uninterrupted combo, pauses at x15, then runs one
+        // real exit so the message explosion can be inspected too.
         showCombo({ message: 'GG', count: previewCount++, emotes: {}, timeoutMs: isFinalPreview ? 60000 : 7000 });
-        if (!isFinalPreview) setTimeout(preview, 1200);
+        if (isFinalPreview) setTimeout(hideCombo, 2600);
+        else setTimeout(preview, 1200);
       };
       preview();
     }

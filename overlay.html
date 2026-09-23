@@ -111,6 +111,34 @@
     :root[data-theme="inferno"] .theme-fx .fx-a, :root[data-theme="inferno"] .theme-fx .fx-b { display: none; }
     :root[data-theme="inferno"] .theme-fx .flame { display: block; width: var(--width); height: var(--height); bottom: -10px; left: var(--left); background: linear-gradient(to top, #e91e27 0%, #ff6a25 46%, #ffd83d 75%, #fff4a8 100%); clip-path: polygon(0 100%, 13% 45%, 26% 70%, 43% 8%, 57% 61%, 73% 30%, 87% 72%, 100% 0, 100% 100%); filter: drop-shadow(0 0 10px #ff4d24); transform-origin: bottom center; animation: flame-flicker var(--duration) var(--delay) ease-in-out infinite alternate; }
 
+    /* SVG theme art: precise silhouettes stay behind the readable combo UI. */
+    .theme-art { display: none; position: absolute; pointer-events: none; overflow: visible; }
+    :root[data-theme="tsunami"] .theme-fx, :root[data-theme="inferno"] .theme-fx { z-index: 1; }
+    :root[data-theme="tsunami"] .combo-card, :root[data-theme="inferno"] .combo-card { z-index: 2; }
+    :root[data-theme="tsunami"] .combo-card { background: linear-gradient(180deg, rgba(185,247,255,.86), rgba(67,217,250,.72) 46%, rgba(9,111,203,.78)); }
+    :root[data-theme="inferno"] .combo-card { background: radial-gradient(circle at 50% -20%, rgba(255,221,82,.86), rgba(255,106,36,.76) 39%, rgba(159,21,29,.84) 73%, rgba(48,8,12,.9) 100%); }
+    :root[data-theme="tsunami"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
+
+    :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(960px, 130%); height: 300px; left: 50%; bottom: -105px; transform: translateX(-50%); filter: drop-shadow(0 0 14px rgba(38,211,255,.52)); }
+    :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); transform-origin: 50% 100%; animation: wave-idle 3.2s ease-in-out infinite; }
+    :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #eaffff; stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; opacity: .95; }
+    :root[data-theme="tsunami"] .foam { fill: #fff; opacity: .88; animation: foam-bob 1.9s ease-in-out infinite alternate; }
+    :root[data-theme="tsunami"] .splash { fill: #dfffff; opacity: 0; transform-box: fill-box; transform-origin: center bottom; }
+    :root[data-theme="tsunami"] #combo.impact .wave-body { animation: wave-crash 540ms cubic-bezier(.12,.8,.18,1.05) both; }
+    :root[data-theme="tsunami"] #combo.impact .splash { animation: splash-pop 700ms cubic-bezier(.12,.75,.28,1) both; animation-delay: var(--delay); }
+    :root[data-theme="tsunami"] #combo.milestone .tsunami-art { transform: translateX(-50%) scale(calc(1 + (var(--power) - 1) * .9)); filter: drop-shadow(0 0 26px rgba(69,224,255,.9)); }
+    :root[data-theme="tsunami"] #combo.milestone::before { background: radial-gradient(ellipse, rgba(46,193,255,.68), transparent 68%); }
+
+    :root[data-theme="inferno"] .inferno-art { display: block; width: min(900px, 123%); height: 290px; left: 50%; bottom: -98px; transform: translateX(-50%); filter: drop-shadow(0 0 16px rgba(255,79,25,.58)); }
+    :root[data-theme="inferno"] .flame-back { fill: url(#flame-deep); transform-origin: 50% 100%; animation: flame-idle-a 1.55s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-mid { fill: url(#flame-mid); transform-origin: 50% 100%; animation: flame-idle-b 1.2s -.4s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .flame-core { fill: url(#flame-core); transform-origin: 50% 100%; animation: flame-idle-c .92s -.25s ease-in-out infinite alternate; }
+    :root[data-theme="inferno"] .ember { fill: #ffe99b; opacity: 0; transform-box: fill-box; transform-origin: center; }
+    :root[data-theme="inferno"] #combo.impact .inferno-art { animation: flame-flare 520ms cubic-bezier(.12,.8,.2,1.08) both; filter: drop-shadow(0 0 30px rgba(255,104,31,.95)); }
+    :root[data-theme="inferno"] #combo.impact .ember { animation: ember-rise 860ms ease-out both; animation-delay: var(--delay); }
+    :root[data-theme="inferno"] #combo.milestone .inferno-art { transform: translateX(-50%) scale(calc(1 + (var(--power) - 1))); filter: drop-shadow(0 0 34px rgba(255,93,28,1)); }
+    :root[data-theme="inferno"] #combo.milestone::before { background: radial-gradient(ellipse, rgba(255,104,25,.66), transparent 68%); }
+
     /* Luna: a midnight capsule with a crescent moon and orbiting stars. */
     :root[data-theme="luna"] .theme-fx { opacity: 1; z-index: 2; }
     :root[data-theme="luna"] .combo-card { border-radius: 54px; clip-path: none; background: radial-gradient(circle at 17% 20%, #7980be 0%, transparent 28%), radial-gradient(circle at 80% 100%, #553e9c, transparent 42%), #171a4d; border: 3px solid #e4e7ff; border-bottom: 7px solid #7774c5; box-shadow: 0 12px 0 #0a0b28, 0 0 30px #a89cff; }
@@ -126,8 +154,17 @@
     @keyframes meteor-shower { 0%, 5% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 10% { opacity: 1; } 38% { opacity: 1; } 55%, 100% { opacity: 0; transform: translate(-420px, 280px) rotate(145deg); } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes wave-roll { 0%, 100% { transform: translateY(0) rotate(7deg) scaleX(1); } 50% { transform: translateY(-10px) rotate(3deg) scaleX(1.06); } }
+    @keyframes wave-idle { 0%,100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-7px) scaleX(1.025); } }
+    @keyframes wave-crash { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-34px) skewX(-4deg) scale(1.12,1.2); } 100% { transform: translateY(0) skewX(0) scale(1); } }
+    @keyframes foam-bob { to { transform: translate(4px,-6px) scale(1.08); opacity: 1; } }
+    @keyframes splash-pop { 0% { opacity: 0; transform: translate(0,0) scale(.3); } 22% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.8); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes flame-flicker { 0% { transform: translateY(0) scaleX(1) skewX(-2deg); } 100% { transform: translateY(-18px) scaleX(.82) skewX(5deg); filter: drop-shadow(0 0 20px #ff8126); } }
+    @keyframes flame-idle-a { to { transform: translateY(-8px) scaleX(.94) skewX(-2deg); } }
+    @keyframes flame-idle-b { to { transform: translateY(-15px) scaleX(1.08) skewX(3deg); } }
+    @keyframes flame-idle-c { to { transform: translateY(-21px) scaleX(.84) skewX(-4deg); } }
+    @keyframes flame-flare { 0% { transform: translateX(-50%) scale(1); } 42% { transform: translateX(-50%) translateY(-30px) scale(1.18,1.34); } 100% { transform: translateX(-50%) scale(1); } }
+    @keyframes ember-rise { 0% { opacity: 0; transform: translate(0,8px) scale(.35); } 18% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(.1); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
     @keyframes twinkle { to { transform: scale(2.2); opacity: .35; } }
 
@@ -318,6 +355,41 @@
 <body>
   <main id="combo" aria-live="polite">
     <div class="theme-fx" aria-hidden="true">
+      <svg class="theme-art tsunami-art" viewBox="0 0 900 320" aria-hidden="true">
+        <defs>
+          <linearGradient id="water-gradient" x1="0" y1="1" x2="0.55" y2="0">
+            <stop offset="0" stop-color="#043a83"/><stop offset=".48" stop-color="#087fc1"/><stop offset=".78" stop-color="#2ee2ef"/><stop offset="1" stop-color="#dfffff"/>
+          </linearGradient>
+        </defs>
+        <!-- A cresting curl on the right, with a deep rolling base under the text. -->
+        <path class="wave-body" d="M0 301 C74 239 146 270 214 237 C299 196 345 241 410 202 C492 153 538 205 588 147 C627 101 608 44 548 43 C504 42 482 72 496 105 C510 137 550 129 556 101 C562 72 542 67 530 79 C538 38 585 14 632 27 C701 46 726 114 691 178 C658 238 594 257 535 260 C437 265 371 285 283 286 C174 288 88 274 0 320 Z"/>
+        <path class="wave-lip" d="M284 238 C355 194 408 221 470 181 C537 138 583 169 620 115 C644 80 632 48 605 37 C563 20 527 44 530 75 C533 97 556 104 568 86"/>
+        <g class="foam">
+          <circle cx="308" cy="223" r="8"/><circle cx="334" cy="208" r="5"/><circle cx="370" cy="204" r="10"/><circle cx="407" cy="194" r="6"/><circle cx="450" cy="179" r="9"/><circle cx="489" cy="160" r="5"/><circle cx="626" cy="93" r="7"/>
+        </g>
+        <g class="splash">
+          <circle cx="575" cy="70" r="8" style="--delay:0ms;--drift-x:-35px;--drift-y:-93px"/><circle cx="604" cy="86" r="5" style="--delay:65ms;--drift-x:22px;--drift-y:-118px"/><circle cx="641" cy="121" r="7" style="--delay:120ms;--drift-x:48px;--drift-y:-78px"/><circle cx="540" cy="112" r="4" style="--delay:165ms;--drift-x:-57px;--drift-y:-70px"/>
+        </g>
+      </svg>
+      <svg class="theme-art inferno-art" viewBox="0 0 900 320" aria-hidden="true">
+        <defs>
+          <linearGradient id="flame-deep" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#59070d"/><stop offset=".45" stop-color="#d6221e"/><stop offset="1" stop-color="#ff7a21"/></linearGradient>
+          <linearGradient id="flame-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e52c17"/><stop offset=".62" stop-color="#ff8b20"/><stop offset="1" stop-color="#ffd33f"/></linearGradient>
+          <linearGradient id="flame-core" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7921"/><stop offset=".58" stop-color="#ffe14d"/><stop offset="1" stop-color="#fff8cc"/></linearGradient>
+        </defs>
+        <!-- Three overlapping flame silhouettes make a bonfire, not a flat strip. -->
+        <path class="flame-back" d="M60 320 C38 244 94 214 110 151 C124 95 98 75 130 23 C134 89 190 111 175 176 C204 128 247 101 246 49 C292 113 302 169 272 220 C310 180 353 161 365 92 C397 164 412 215 382 267 C436 235 481 185 477 119 C537 183 547 235 508 320 Z"/>
+        <path class="flame-back" d="M407 320 C387 248 440 211 448 151 C457 97 433 76 461 31 C469 90 510 118 495 170 C528 131 565 103 563 55 C610 113 625 177 595 221 C634 180 669 159 677 102 C710 165 720 227 690 320 Z"/>
+        <path class="flame-back" d="M620 320 C614 256 666 220 677 171 C691 108 664 86 695 39 C702 102 751 121 738 182 C772 141 806 115 808 67 C851 126 864 191 832 237 C858 212 878 180 883 140 C911 203 910 270 888 320 Z"/>
+        <path class="flame-mid" d="M143 320 C134 257 190 221 189 160 C221 208 235 235 218 273 C251 235 276 201 277 157 C317 214 323 271 299 320 Z"/>
+        <path class="flame-mid" d="M394 320 C385 257 434 218 435 151 C475 203 487 241 469 274 C504 233 532 197 532 149 C575 214 580 274 556 320 Z"/>
+        <path class="flame-mid" d="M653 320 C648 261 692 222 699 163 C733 209 744 244 728 279 C758 240 782 204 785 158 C825 218 831 271 808 320 Z"/>
+        <path class="flame-core" d="M220 320 C218 271 247 239 243 193 C272 233 280 263 266 287 C286 260 300 234 298 201 C328 243 333 283 317 320 Z"/>
+        <path class="flame-core" d="M480 320 C476 270 510 235 507 183 C540 230 549 264 533 290 C557 258 570 225 569 188 C605 237 608 279 590 320 Z"/>
+        <g class="ember">
+          <circle cx="247" cy="151" r="6" style="--delay:0ms;--drift-x:-22px;--drift-y:-100px"/><circle cx="315" cy="206" r="4" style="--delay:90ms;--drift-x:29px;--drift-y:-130px"/><circle cx="522" cy="141" r="7" style="--delay:45ms;--drift-x:18px;--drift-y:-117px"/><circle cx="654" cy="185" r="4" style="--delay:150ms;--drift-x:-33px;--drift-y:-98px"/><circle cx="743" cy="123" r="6" style="--delay:120ms;--drift-x:39px;--drift-y:-140px"/>
+        </g>
+      </svg>
       <i class="fx-a"></i><i class="fx-b"></i>
       <i class="petal" style="--x:4%;--size:13px;--duration:3.4s;--delay:-.4s;--drift:-38px;--spin:210deg"></i>
       <i class="petal" style="--x:12%;--size:18px;--duration:4.2s;--delay:-2.1s;--drift:-56px;--spin:310deg;--petal-color:#ffd0e5"></i>
@@ -367,6 +439,7 @@
     let hideTimer;
     let glitchTimer;
     let milestoneTimer;
+    let impactTimer;
     const validThemes = new Set(['game', 'sakura', 'tsunami', 'inferno', 'luna']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
@@ -431,6 +504,13 @@
       combo.style.setProperty('--combo-color', intensity.color);
       combo.style.setProperty('--count-color', intensity.color);
       combo.classList.toggle('milestone', intensity.milestone);
+      // Theme-only impact effects replay on every increment without touching
+      // the continuous core combo animation.
+      combo.classList.remove('impact');
+      void combo.offsetWidth;
+      combo.classList.add('impact');
+      clearTimeout(impactTimer);
+      impactTimer = setTimeout(() => combo.classList.remove('impact'), 900);
       if ([5, 10, 25, 50].includes(event.count)) {
         combo.classList.remove('milestone-hit');
         void combo.offsetWidth;
@@ -458,9 +538,10 @@
     function hideCombo() {
       // The slam animation uses a filled final frame, so it must be removed
       // before the exit animation or its opacity would remain pinned at 1.
-      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit');
+      combo.classList.remove('visible', 'glitch', 'slam', 'shake', 'milestone-hit', 'impact');
       clearTimeout(glitchTimer);
       clearTimeout(milestoneTimer);
+      clearTimeout(impactTimer);
       combo.classList.add('hiding');
       setTimeout(() => combo.classList.remove('hiding'), 1100);
     }

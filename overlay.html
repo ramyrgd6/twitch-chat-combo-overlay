@@ -15,7 +15,7 @@
       --panel-edge: rgba(255, 255, 255, .34);
       --font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
       --message-size: clamp(68px, 9vw, 168px);
-      --count-size: clamp(38px, 4.6vw, 78px);
+      --count-size: clamp(48px, 5.6vw, 96px);
       --bottom-offset: 7vh;
     }
     :root[data-theme="sakura"] {
@@ -57,7 +57,7 @@
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
     /* After the entrance, keep the combo alive with a subtle, continuous shake. */
-    #combo.visible:not(.hiding):not(.glitch) .combo-card { animation: idle-shake 1.15s ease-in-out infinite; }
+    #combo.visible:not(.hiding):not(.glitch) .combo-card { animation: idle-shake 620ms steps(2, end) infinite; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -247,10 +247,12 @@
       filter: drop-shadow(3px 3px 0 var(--ink)) drop-shadow(0 0 8px rgba(255,255,255,.18));
     }
     #count {
-      position: relative;
-      z-index: 1;
-      margin: 9px -34px -33px auto;
-      padding: 7px 15px 8px;
+      position: absolute;
+      z-index: 3;
+      top: -49px;
+      right: -32px;
+      margin: 0;
+      padding: 8px 17px 9px;
       color: var(--count-color);
       background: var(--ink);
       font: 900 calc(var(--count-size) * var(--power))/ .8 var(--font);
@@ -272,10 +274,10 @@
     }
     @keyframes idle-shake {
       0%, 100% { translate: 0 0; }
-      20% { translate: calc(-3px * var(--power)) 2px; }
-      45% { translate: calc(3px * var(--power)) -2px; }
-      68% { translate: calc(-2px * var(--power)) 1px; }
-      84% { translate: calc(1px * var(--power)) 2px; }
+      20% { translate: calc(-6px * var(--power)) 3px; }
+      42% { translate: calc(6px * var(--power)) -3px; }
+      66% { translate: calc(-4px * var(--power)) 2px; }
+      84% { translate: calc(3px * var(--power)) -2px; }
     }
     @keyframes count-pop {
       0% { transform: scale(1); filter: brightness(1); }
@@ -345,8 +347,8 @@
     <section class="combo-card">
       <div class="label">CHAT COMBO</div>
       <div class="message-wrap"><div id="message"></div></div>
-      <div id="count"></div>
     </section>
+    <div id="count"></div>
   </main>
   <script>
     // These must match the backend's defaults unless you add settings via URL.

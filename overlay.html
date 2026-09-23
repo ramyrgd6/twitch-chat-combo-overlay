@@ -84,7 +84,7 @@
     :root[data-theme="sakura"] .theme-fx .fx-a, :root[data-theme="sakura"] .theme-fx .fx-b { display: none; }
     :root[data-theme="sakura"] .theme-fx .petal { display: block; width: calc(var(--size) * 1.35); height: var(--size); top: -30px; left: var(--x); border-radius: 90% 10% 90% 10%; background: var(--petal-color, #ff9dcc); box-shadow: 0 0 9px rgba(255,255,255,.72); animation: sakura-rain var(--duration) var(--delay) linear infinite; }
     .theme-fx .meteor { display: none; }
-    :root[data-theme="luna"] .theme-fx .meteor { display: block; width: calc(var(--length) * 1.35); height: 5px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #6f86ff 28%, #bdc8ff 55%, #fff 82%, transparent); box-shadow: 0 0 12px #d4dcff, 0 0 28px #7687ff; animation: meteor-shower var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="luna"] .theme-fx .meteor { display: block; width: calc(var(--length) * 1.55); height: 8px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #5264ff 20%, #9eaeff 45%, #fff 72%, transparent); box-shadow: 0 0 15px #f1f3ff, 0 0 38px #7789ff, 0 0 64px rgba(102,120,255,.8); animation: meteor-shower var(--duration) var(--delay) linear infinite; }
 
     /* Tsunami: a calm, rounded water-glass card. The wave is tucked into it,
        rather than becoming a second, disconnected piece below the counter. */
@@ -131,6 +131,8 @@
     :root[data-theme="tsunami"] #combo.theme-burst .tsunami-art { animation: tsunami-burst 700ms ease-in-out both; filter: drop-shadow(0 0 28px rgba(55,216,255,.95)); }
 
     :root[data-theme="inferno"] .inferno-art { display: none; }
+    /* Cinders pass in front like a real shower; the card remains legible behind their small gaps. */
+    :root[data-theme="inferno"] .theme-fx { z-index: 3; }
     :root[data-theme="inferno"] .flame-unit { transform-box: fill-box; transform-origin: 50% 100%; }
     :root[data-theme="inferno"] .flame-one { animation: flame-flicker-one 1.1s -.2s ease-in-out infinite alternate; }
     :root[data-theme="inferno"] .flame-two { animation: flame-flicker-two 1.4s -.8s ease-in-out infinite alternate; }
@@ -410,6 +412,11 @@
       <i class="meteor" style="--x:91%;--y:53%;--length:64px;--duration:5.8s;--delay:-4.2s"></i>
       <i class="meteor" style="--x:57%;--y:12%;--length:83px;--duration:5.4s;--delay:-3.6s"></i>
       <i class="meteor" style="--x:76%;--y:71%;--length:106px;--duration:4.9s;--delay:-.2s"></i>
+      <i class="meteor" style="--x:45%;--y:4%;--length:128px;--duration:4.4s;--delay:-2.2s"></i>
+      <i class="meteor" style="--x:89%;--y:37%;--length:112px;--duration:4.1s;--delay:-1.3s"></i>
+      <i class="meteor" style="--x:63%;--y:62%;--length:136px;--duration:5s;--delay:-3.8s"></i>
+      <i class="meteor" style="--x:72%;--y:-8%;--length:92px;--duration:3.9s;--delay:-.5s"></i>
+      <i class="meteor" style="--x:99%;--y:78%;--length:120px;--duration:4.7s;--delay:-2.7s"></i>
       <!-- Inferno: independent cinders raining around the card, never covering the text. -->
       <i class="fire-ember" style="--x:3%;--y:-12px;--size:12px;--trail:34px;--tilt:-8deg;--duration:3.8s;--delay:-.4s;--drift:28px"></i>
       <i class="fire-ember" style="--x:10%;--y:52px;--size:8px;--trail:22px;--tilt:7deg;--duration:4.5s;--delay:-2.3s;--drift:-22px"></i>

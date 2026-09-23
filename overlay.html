@@ -82,6 +82,8 @@
     .theme-fx .petal { display: none; }
     :root[data-theme="sakura"] .theme-fx .fx-a, :root[data-theme="sakura"] .theme-fx .fx-b { display: none; }
     :root[data-theme="sakura"] .theme-fx .petal { display: block; width: var(--size); height: calc(var(--size) * .72); top: -30px; left: var(--x); border-radius: 90% 10% 90% 10%; background: var(--petal-color, #ff9dcc); box-shadow: 0 0 5px rgba(255,255,255,.45); animation: sakura-rain var(--duration) var(--delay) linear infinite; }
+    .theme-fx .meteor { display: none; }
+    :root[data-theme="luna"] .theme-fx .meteor { display: block; width: var(--length); height: 3px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #8a9cff 38%, #fff 82%, transparent); box-shadow: 0 0 8px #b8c5ff, 0 0 17px #7687ff; animation: meteor-shower var(--duration) var(--delay) linear infinite; }
 
     /* Tsunami: a rounded waterline panel with bright curling waves. */
     :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
@@ -113,6 +115,7 @@
 
     @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
     @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, -25px) rotate(0deg); } 9% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 300px) rotate(var(--spin)); } }
+    @keyframes meteor-shower { 0%, 7% { opacity: 0; transform: translate(70px, -55px) rotate(145deg); } 12% { opacity: 1; } 35% { opacity: .9; } 49%, 100% { opacity: 0; transform: translate(-360px, 240px) rotate(145deg); } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
@@ -302,6 +305,12 @@
       <i class="petal" style="--x:78%;--size:19px;--duration:4.6s;--delay:-1s;--drift:-84px;--spin:400deg;--petal-color:#ffd4e8"></i>
       <i class="petal" style="--x:86%;--size:14px;--duration:3.5s;--delay:-3.1s;--drift:-51px;--spin:240deg"></i>
       <i class="petal" style="--x:94%;--size:16px;--duration:4s;--delay:-1.5s;--drift:-68px;--spin:350deg;--petal-color:#ff77b7"></i>
+      <i class="meteor" style="--x:80%;--y:2%;--length:96px;--duration:4.2s;--delay:-.7s"></i>
+      <i class="meteor" style="--x:96%;--y:18%;--length:72px;--duration:5.1s;--delay:-2.9s"></i>
+      <i class="meteor" style="--x:68%;--y:34%;--length:118px;--duration:4.7s;--delay:-1.8s"></i>
+      <i class="meteor" style="--x:91%;--y:53%;--length:64px;--duration:5.8s;--delay:-4.2s"></i>
+      <i class="meteor" style="--x:57%;--y:12%;--length:83px;--duration:5.4s;--delay:-3.6s"></i>
+      <i class="meteor" style="--x:76%;--y:71%;--length:106px;--duration:4.9s;--delay:-.2s"></i>
     </div>
     <section class="combo-card">
       <div class="label">CHAT COMBO</div>

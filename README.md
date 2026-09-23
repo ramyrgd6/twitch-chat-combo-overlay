@@ -8,7 +8,7 @@ An OBS browser-source overlay that turns repeated Twitch chat messages into a pu
 
 ![Twitch chat combo overlay running in OBS](media/obs-overlay-preview.png)
 
-### Discord Rich Presence showcase
+### Square preview
 
 ![Square combo overlay showcase](media/discord-rpc-showcase.gif)
 

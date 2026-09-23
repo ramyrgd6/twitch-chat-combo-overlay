@@ -56,7 +56,7 @@ These are the steps used for the current Linux workflow.
 
 ### Successful startup
 
-The app prints its local overlay address and confirms that it is listening on the private local address.
+Example terminal output after the app connects to chat.
 
 ![Successful local server startup](media/local-startup-preview.png)
 

@@ -54,6 +54,12 @@ These are the steps used for the current Linux workflow.
 
 6. Keep that terminal open while using the overlay. A successful start prints the local overlay URL.
 
+### Successful startup
+
+The app prints its local overlay address and confirms that it is listening on the private local address.
+
+![Successful local server startup](media/local-startup-preview.png)
+
 ## Setup on Windows (untested)
 
 The application uses standard Node.js and OBS features, but this exact workflow has not been tested on Windows.

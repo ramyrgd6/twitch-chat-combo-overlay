@@ -14,7 +14,7 @@ const CHANNEL = (process.env.TWITCH_CHANNEL || '').trim().replace(/^#/, '').toLo
 const DEFAULT_COMBO_TIMEOUT_MS = numberSetting('COMBO_TIMEOUT_MS', 6500);
 const DEFAULT_MIN_COMBO_COUNT = integerSetting('MIN_COMBO_COUNT', 2, 2, 999);
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
-const THEMES = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna']);
+const THEMES = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna', 'blizzard']);
 const DEFAULT_SETTINGS = {
   theme: 'game',
   comboTimeoutMs: DEFAULT_COMBO_TIMEOUT_MS,

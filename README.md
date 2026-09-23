@@ -106,7 +106,7 @@ MIN_COMBO_COUNT=2
 With `npm start` still running:
 
 1. Open `http://localhost:3000/settings.html` in a normal browser.
-2. Select a theme: **Game**, **Sakura**, **Rainfall**, **Inferno**, or **Luna**.
+2. Select a theme: **Game**, **Sakura**, **Rainfall**, **Inferno**, **Luna**, or **Blizzard**.
 3. Adjust **Combo timeout** and **Show starting at** as desired. The chosen values save locally in `settings.json` and take effect right away.
 4. To see a scripted animation without waiting for chat, open `http://localhost:3000/overlay.html?preview=1`.
 
@@ -157,6 +157,7 @@ Use a dedicated, read-only bot account when possible. Treat its token like a pas
 
 - Native Twitch emotes and BetterTTV, 7TV, and FrankerFaceZ emotes can render in matching messages.
 - Every message has its own short-lived repeat chain; expired chains are cleared automatically.
+- **Blizzard** adds a frosted card with windblown falling snowflakes.
 - The visual palette, type, sizing, placement, and milestone effects live in `overlay.html` if you want to customize the design.
 - The app keeps the local Control Room, overlay, WebSocket, and chat events private by binding to `127.0.0.1` by default.
 

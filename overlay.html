@@ -30,6 +30,9 @@
     :root[data-theme="luna"] {
       --accent: #d9dcff; --accent-hot: #ae8cff; --panel: rgba(17, 19, 51, .76); --panel-edge: rgba(230, 234, 255, .5); --ink: #0c0d28;
     }
+    :root[data-theme="blizzard"] {
+      --accent: #e7f8ff; --accent-hot: #78ccff; --panel: rgba(14, 52, 80, .8); --panel-edge: rgba(228, 249, 255, .72); --ink: #061e34;
+    }
 
     * { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
@@ -132,6 +135,17 @@
     :root[data-theme="luna"] .theme-fx .fx-a { width: 90px; height: 90px; top: -8px; left: 6%; border-radius: 50%; background: #eef0ff; box-shadow: inset -24px -5px 0 #55518c, 175px 15px 0 -42px #fff, 255px 60px 0 -43px #d8ddff, 410px -5px 0 -44px #fff, 526px 50px 0 -43px #d8ddff; filter: drop-shadow(0 0 16px #b8bfff); }
     :root[data-theme="luna"] .theme-fx .fx-b { width: 5px; height: 5px; top: 34px; right: 12%; border-radius: 50%; background: white; box-shadow: -65px 40px #c5c8ff, -150px -22px #fff, -245px 52px #b8c7ff, -335px -10px #fff; animation: twinkle 1.6s ease-in-out infinite alternate; }
 
+    /* Blizzard: an icy frame beneath a dense, gently windblown snowfall. */
+    :root[data-theme="blizzard"] .theme-fx { opacity: 1; z-index: 3; }
+    :root[data-theme="blizzard"] .combo-card { border-radius: 34px; clip-path: none; background: radial-gradient(circle at 18% 0%, rgba(255,255,255,.72), transparent 26%), linear-gradient(145deg, #8fd5f5 0%, #32759e 48%, #123453 100%); border: 3px solid #f0fcff; border-bottom: 8px solid #154a70; box-shadow: 0 13px 0 #08243b, inset 0 2px 0 rgba(255,255,255,.54), 0 0 34px rgba(162,226,255,.72); }
+    :root[data-theme="blizzard"] #message { color: #f6fdff; -webkit-text-stroke: 3px #0a3c60; text-shadow: 3px 4px 0 #092940; }
+    :root[data-theme="blizzard"] .label { color: #0c4268; background: #e8faff; border-color: #fff; box-shadow: 3px 3px 0 #175273; }
+    :root[data-theme="blizzard"] .message-wrap { border-color: rgba(232,250,255,.3); }
+    :root[data-theme="blizzard"] .theme-fx .fx-a, :root[data-theme="blizzard"] .theme-fx .fx-b { display: none; }
+    .theme-fx .snowflake { display: none; }
+    :root[data-theme="blizzard"] .theme-fx .snowflake { display: block; top: var(--y); left: var(--x); color: var(--snow-color, #fff); font-family: Georgia, serif; font-size: var(--size); line-height: 1; text-shadow: 0 0 7px rgba(211,245,255,.95), 0 0 18px rgba(125,207,255,.72); animation: snow-fall var(--duration) var(--delay) linear infinite; }
+    :root[data-theme="blizzard"] .theme-fx .snowflake::before { content: '❄'; }
+
 
     @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
     @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, 0) rotate(0deg); } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 410px) rotate(var(--spin)); } }
@@ -148,6 +162,7 @@
     @keyframes ember-fall { 0%, 5% { opacity: 0; transform: translate(0, 0) scale(.55); } 10% { opacity: 1; } 38% { opacity: .9; } 55%, 100% { opacity: 0; transform: translate(-420px, 280px) scale(.3); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
     @keyframes twinkle { to { transform: scale(2.2); opacity: .35; } }
+    @keyframes snow-fall { 0%, 4% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.6); } 10% { opacity: .95; } 82% { opacity: .82; } 100% { opacity: 0; transform: translate(var(--drift), 415px) rotate(260deg) scale(1.12); } }
 
     /* Theme-specific exits: each one replaces the generic crumble. */
     :root[data-theme="sakura"] #combo.hiding { animation: sakura-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
@@ -170,6 +185,11 @@
     :root[data-theme="luna"] #combo.hiding .theme-fx { animation: star-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     :root[data-theme="luna"] #combo.hiding::before, :root[data-theme="luna"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
 
+    :root[data-theme="blizzard"] #combo.hiding { animation: blizzard-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="blizzard"] #combo.hiding .combo-card { animation: blizzard-card-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="blizzard"] #combo.hiding .theme-fx { animation: snow-exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
+    :root[data-theme="blizzard"] #combo.hiding::before, :root[data-theme="blizzard"] #combo.hiding .combo-card::before { animation: none; opacity: 0; }
+
     @keyframes sakura-exit { 0%, 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-68px) rotate(6deg); } }
     @keyframes sakura-card-exit { 45% { transform: rotate(-2deg); } 100% { transform: translate(38px, -54px) rotate(11deg) scale(.75); filter: blur(2px); } }
     @keyframes petal-exit { 35% { opacity: 1; } 100% { opacity: 0; transform: translate(90px, -80px) rotate(28deg) scale(1.5); } }
@@ -182,6 +202,9 @@
     @keyframes luna-exit { 0%, 45% { opacity: 1; } 100% { opacity: 0; transform: scale(.08); filter: blur(2px); } }
     @keyframes luna-card-exit { 45% { transform: scale(.96); } 100% { transform: scale(.16) rotate(35deg); filter: brightness(1.9) blur(3px); } }
     @keyframes star-exit { 50% { opacity: 1; } 100% { opacity: 0; transform: scale(3.4) rotate(60deg); filter: blur(2px); } }
+    @keyframes blizzard-exit { 0%, 35% { opacity: 1; } 100% { opacity: 0; transform: translateX(92px) scale(.7); filter: blur(4px); } }
+    @keyframes blizzard-card-exit { 45% { transform: translateX(-10px) rotate(-1deg); } 100% { transform: translate(78px, 18px) rotate(5deg) scale(.7); filter: blur(3px) brightness(1.25); } }
+    @keyframes snow-exit { 100% { opacity: 0; transform: translate(155px, 60px) scale(1.5); filter: blur(4px); } }
     .combo-card {
       position: relative;
       z-index: 1;
@@ -390,6 +413,27 @@
       <i class="rain-drop" style="--x:81%;--y:29px;--width:3px;--length:36px;--duration:2.1s;--delay:-2s"></i>
       <i class="rain-drop" style="--x:90%;--y:122px;--width:3px;--length:29px;--duration:1.9s;--delay:-.5s"></i>
       <i class="rain-drop" style="--x:100%;--y:57px;--width:3px;--length:40px;--duration:2.3s;--delay:-1.4s"></i>
+      <!-- Blizzard: varied snowflakes fall straight down with a cold crosswind. -->
+      <i class="snowflake" style="--x:3%;--y:-26px;--size:18px;--duration:4.3s;--delay:-.3s;--drift:62px"></i>
+      <i class="snowflake" style="--x:10%;--y:36px;--size:12px;--duration:3.6s;--delay:-2.2s;--drift:40px;--snow-color:#d9f4ff"></i>
+      <i class="snowflake" style="--x:17%;--y:-54px;--size:24px;--duration:5.1s;--delay:-1.4s;--drift:84px"></i>
+      <i class="snowflake" style="--x:25%;--y:84px;--size:14px;--duration:3.9s;--delay:-3.1s;--drift:48px"></i>
+      <i class="snowflake" style="--x:32%;--y:-12px;--size:20px;--duration:4.7s;--delay:-.8s;--drift:72px;--snow-color:#c8edff"></i>
+      <i class="snowflake" style="--x:39%;--y:124px;--size:11px;--duration:3.4s;--delay:-2.7s;--drift:36px"></i>
+      <i class="snowflake" style="--x:46%;--y:-38px;--size:17px;--duration:4.5s;--delay:-1.9s;--drift:58px"></i>
+      <i class="snowflake" style="--x:54%;--y:53px;--size:25px;--duration:5.3s;--delay:-.5s;--drift:92px;--snow-color:#d8f3ff"></i>
+      <i class="snowflake" style="--x:61%;--y:-64px;--size:13px;--duration:3.7s;--delay:-2.4s;--drift:44px"></i>
+      <i class="snowflake" style="--x:68%;--y:102px;--size:19px;--duration:4.8s;--delay:-3.3s;--drift:68px;--snow-color:#c6edff"></i>
+      <i class="snowflake" style="--x:75%;--y:-21px;--size:15px;--duration:4.1s;--delay:-1.1s;--drift:53px"></i>
+      <i class="snowflake" style="--x:82%;--y:68px;--size:23px;--duration:5s;--delay:-2.9s;--drift:80px"></i>
+      <i class="snowflake" style="--x:89%;--y:-47px;--size:12px;--duration:3.5s;--delay:-.7s;--drift:38px;--snow-color:#d1f0ff"></i>
+      <i class="snowflake" style="--x:96%;--y:142px;--size:18px;--duration:4.6s;--delay:-3.6s;--drift:65px"></i>
+      <i class="snowflake" style="--x:7%;--y:162px;--size:13px;--duration:3.8s;--delay:-1.6s;--drift:46px"></i>
+      <i class="snowflake" style="--x:22%;--y:149px;--size:21px;--duration:5.2s;--delay:-2.5s;--drift:88px;--snow-color:#ccefff"></i>
+      <i class="snowflake" style="--x:43%;--y:174px;--size:16px;--duration:4.2s;--delay:-.9s;--drift:58px"></i>
+      <i class="snowflake" style="--x:58%;--y:153px;--size:10px;--duration:3.3s;--delay:-2.8s;--drift:34px"></i>
+      <i class="snowflake" style="--x:73%;--y:181px;--size:22px;--duration:5.4s;--delay:-1.3s;--drift:95px;--snow-color:#dcf6ff"></i>
+      <i class="snowflake" style="--x:91%;--y:171px;--size:14px;--duration:4s;--delay:-3.4s;--drift:50px"></i>
       <!-- Inferno: independent cinders raining around the card, never covering the text. -->
       <i class="fire-ember" style="--x:3%;--y:-12px;--size:12px;--trail:34px;--tilt:-8deg;--duration:3.8s;--delay:-.4s;--drift:28px"></i>
       <i class="fire-ember" style="--x:10%;--y:52px;--size:8px;--trail:22px;--tilt:7deg;--duration:4.5s;--delay:-2.3s;--drift:-22px"></i>
@@ -430,13 +474,14 @@
     let milestoneTimer;
     let themeBurstTimer;
     let lastMessage = '';
-    const validThemes = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna']);
+    const validThemes = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna', 'blizzard']);
     const colorRamps = {
       game: ['#45f28c', '#27dcff', '#b46cff', '#ff8c2a', '#ff3159'],
       sakura: ['#ffaad5', '#ff76b7', '#d978ff', '#ff8c8c', '#ff3d80'],
       rainfall: ['#c8f3ff', '#92d9ff', '#568cff', '#546bce', '#a785ff'],
       inferno: ['#ffe04d', '#ffb32c', '#ff792e', '#ff4c32', '#ff244e'],
-      luna: ['#d9dcff', '#91c9ff', '#a58bff', '#d977ff', '#ff70bd']
+      luna: ['#d9dcff', '#91c9ff', '#a58bff', '#d977ff', '#ff70bd'],
+      blizzard: ['#e9f9ff', '#a7e5ff', '#6abcf2', '#7d9dff', '#e2c7ff']
     };
     let currentTheme = 'game';
 

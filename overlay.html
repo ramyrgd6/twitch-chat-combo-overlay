@@ -56,6 +56,8 @@
     #combo.shake { animation-name: slam, shake; animation-duration: 520ms, 420ms; animation-timing-function: cubic-bezier(.12,.82,.16,1.04), ease-in-out; }
     #combo.hiding { animation: exit 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.glitch .combo-card { animation: glitch-frame 360ms cubic-bezier(.22,.61,.36,1) both; }
+    /* After the entrance, keep the combo alive with a subtle, continuous shake. */
+    #combo.visible:not(.hiding):not(.glitch) .combo-card { animation: idle-shake 1.85s ease-in-out infinite; }
     #combo.hiding .combo-card { animation: crumble 1050ms cubic-bezier(.22,.61,.36,1) both; }
     #combo.hiding::before { animation: debris 1050ms ease-out both; }
     #combo::before {
@@ -75,8 +77,8 @@
     :root[data-theme="sakura"] #message { color: #8d2257; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #ffd3e5; }
     :root[data-theme="sakura"] .label { color: white; background: #d73a83; border-color: white; box-shadow: 3px 3px 0 #8d285b; }
     :root[data-theme="sakura"] .message-wrap { border-color: rgba(141,34,87,.2); }
-    :root[data-theme="sakura"] .theme-fx .fx-a { width: 30px; height: 21px; top: 0; left: 2%; border-radius: 90% 10% 90% 10%; background: #ff68ad; transform: rotate(-32deg); box-shadow: 90px 72px #ffc2df, 194px -13px #ff83bd, 300px 95px #ffd2e9, 415px 20px #ff8fc4, 535px 79px #ffc2df; animation: petals 4.5s linear infinite; }
-    :root[data-theme="sakura"] .theme-fx .fx-b { width: 23px; height: 31px; top: 67px; right: 0; border-radius: 90% 10% 90% 10%; background: #ffd4e8; transform: rotate(48deg); box-shadow: -82px 68px #ff85be, -186px -34px #ffc4e0, -315px 61px #ff9dcc, -434px -48px #ffe0ef; animation: petals 5.6s -1.4s linear infinite reverse; }
+    :root[data-theme="sakura"] .theme-fx .fx-a { width: 30px; height: 21px; top: -14px; left: 7%; border-radius: 90% 10% 90% 10%; background: #ff68ad; transform: rotate(-32deg); box-shadow: 58px 36px #ffc2df, 104px 90px #ff83bd, 155px 19px #ffd2e9, 212px 122px #ff8fc4, 264px 62px #ffc2df; animation: petals 4.5s linear infinite; }
+    :root[data-theme="sakura"] .theme-fx .fx-b { width: 23px; height: 31px; top: -55px; left: 26%; border-radius: 90% 10% 90% 10%; background: #ffd4e8; transform: rotate(48deg); box-shadow: -40px 86px #ff85be, 30px 51px #ffc4e0, 82px 142px #ff9dcc, 140px 74px #ffe0ef; animation: petals 5.4s -2.7s linear infinite; }
 
     /* Tsunami: a rounded waterline panel with bright curling waves. */
     :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
@@ -106,7 +108,7 @@
     :root[data-theme="luna"] .theme-fx .fx-b { width: 5px; height: 5px; top: 34px; right: 12%; border-radius: 50%; background: white; box-shadow: -65px 40px #c5c8ff, -150px -22px #fff, -245px 52px #b8c7ff, -335px -10px #fff; animation: twinkle 1.6s ease-in-out infinite alternate; }
 
 
-    @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); } 100% { transform: translate(30px,78px) rotate(110deg); } }
+    @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
     @keyframes waves { 50% { transform: translateY(-9px) scaleY(1.08) rotate(9deg); } }
     @keyframes flames { to { transform: translateY(-17px) scaleX(.9) skewX(-5deg); filter: drop-shadow(0 0 23px #ff7e22); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
@@ -249,6 +251,13 @@
       42% { opacity: 1; transform: translateX(10px) skewX(1deg); }
       68% { transform: translateX(-3px) skewX(0); }
       100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+    @keyframes idle-shake {
+      0%, 100% { translate: 0 0; }
+      20% { translate: -1px 1px; }
+      45% { translate: 1.5px -1px; }
+      68% { translate: -1px 0; }
+      84% { translate: .5px 1px; }
     }
     @keyframes shake {
       0%,100% { translate: 0 0; } 20% { translate: calc(-7px * var(--power)) 0; } 40% { translate: calc(7px * var(--power)) 0; } 60% { translate: calc(-3px * var(--power)) 0; } 80% { translate: calc(3px * var(--power)) 0; }

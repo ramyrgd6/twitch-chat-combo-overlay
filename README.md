@@ -1,83 +1,159 @@
 # Twitch Chat Combo Overlay
 
-An OBS browser-source overlay that turns repeated Twitch chat messages into a punchy fighting-game-style combo counter. It runs locally, needs no database, and displays only the most recently repeated active message.
+A local Twitch chat overlay for OBS that turns repeated chat messages into an animated combo counter. It watches one channel, detects matching messages, and shows the newest active repeat chain in a transparent browser source. Nothing needs to be hosted: the server, Control Room, overlay, and settings all run on your own computer.
 
-## Preview
-
-![Animated combo overlay demo](media/combo-overlay-demo.gif)
-
-![Twitch chat combo overlay running in OBS](media/obs-overlay-preview.png)
-
-### Square preview
-
-![Square combo overlay showcase](media/discord-rpc-showcase.gif)
+## What it looks like
 
 ### Control Room
 
-![Control Room theme selector](media/control-room-preview.png)
+Choose a theme, combo timeout, and the repeat count that should first appear on-screen. Changes are saved locally and update every open overlay immediately.
 
-## Quick start
+![Control Room with Sakura selected](media/control-room-preview.png)
 
-1. Install Node.js 18 or newer.
-2. In this folder, run `npm install`.
-3. Copy `.env.example` to `.env` and set `TWITCH_CHANNEL` to the channel to watch.
-4. Start it with `npm start`.
-5. Open `http://localhost:3000/settings.html` to choose a theme, then open `http://localhost:3000/overlay.html` in a browser to test it.
+### Sakura overlay preview
 
-Leaving `TWITCH_BOT_USERNAME` and `TWITCH_OAUTH_TOKEN` empty uses Twitch's anonymous read-only chat connection. To use a bot account, supply both values; OAuth tokens conventionally begin with `oauth:`. A token can be generated through Twitch's [Chat OAuth Token Generator](https://twitchapps.com/tmi/). Keep `.env` private and never commit it.
+The overlay itself has a transparent background, so it can sit on top of your stream scene.
 
-## OBS setup
+![Sakura chat combo overlay](media/sakura-overlay-preview.png)
 
-Add a **Browser** source, set its URL to:
+### In OBS
 
-`http://localhost:3000/overlay.html`
+Use the overlay as a Browser source in the same OBS scene as your camera, game, or background.
 
-Use the same dimensions as your scene (for example, 1920 × 1080). The page has a transparent background. OBS and the Node server should run on the same computer; by default, the app listens only on that computer to keep the Control Room and chat events private.
+![Sakura chat combo overlay running in OBS](media/obs-in-use-preview.png)
 
-## Configuration
+## Requirements
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `TWITCH_CHANNEL` | required | Channel name without `#`. |
-| `TWITCH_BOT_USERNAME` | empty | Optional authenticated bot username. |
-| `TWITCH_OAUTH_TOKEN` | empty | Optional bot OAuth token. |
-| `PORT` | `3000` | Local web server port. |
-| `HOST` | `127.0.0.1` | Loopback address used to keep the app private to this computer. |
-| `COMBO_TIMEOUT_MS` | `6500` | Default timeout in milliseconds before a repeat chain expires. |
-| `MIN_COMBO_COUNT` | `2` | Default first count sent to the overlay. |
+- [Node.js](https://nodejs.org/) 18 or newer.
+- OBS Studio if you want to use the overlay in a stream.
+- A Twitch channel name. Anonymous, read-only chat access is the default; a bot account is optional.
 
-You can also change the timeout and starting count from the Control Room. Those choices are saved locally alongside your selected theme and take effect immediately; `.env` remains the fallback for a fresh installation.
+## Setup on Linux
 
-To preview a different fade time in the browser source only, append `?timeout=6000` to its URL. Normally this should match `COMBO_TIMEOUT_MS`.
+These are the steps used for the current Linux workflow.
 
-To preview the overlay design without Twitch chat, temporarily set the OBS source URL to `http://localhost:3000/overlay.html?preview=1`. It plays one sample combo from x2 to x15, pauses briefly, then demonstrates the exit burst. Remove `?preview=1` before going live.
+1. Open a terminal in the project folder.
+2. Create your private configuration file from the example:
 
-## Control Room and themes
+   ```bash
+   cp .env.example .env
+   ```
 
-Open `http://localhost:3000/settings.html` in a normal browser to use the local Control Room. It offers five live-switching themes:
+3. Open `.env` in an editor and set `TWITCH_CHANNEL` to the channel to watch, without `#`.
+4. Install the app's dependencies:
 
-- **Game** — arcade gold, the default.
-- **Sakura** — a glass frame with drifting cherry-blossom petals.
-- **Rainfall** — a storm-glass frame with bright diagonal rainfall.
-- **Inferno** — an ember-lit frame with diagonal cinders and fire comets.
-- **Luna** — a rounded midnight frame with a crescent moon and twinkling stars.
+   ```bash
+   npm install
+   ```
 
-Picking a theme saves it in a local `settings.json` file and immediately updates any open OBS overlay sources. That file, along with `.env` and `node_modules`, is excluded from Git so channel credentials and local preferences are never published.
+5. Start the local server:
 
-## Tuning and behavior
+   ```bash
+   npm start
+   ```
 
-Messages are compared after trimming their outer whitespace and converting to lowercase. `Pog`, `POG`, and ` pog ` therefore combine, while different punctuation remains distinct. Edit `normalizeMessage()` in `server.js` to change matching rules.
+6. Keep that terminal open while using the overlay. A successful start prints the local overlay URL.
 
-Native Twitch emotes are rendered as their actual emote images in the overlay. BetterTTV, 7TV, and FrankerFaceZ global and channel emotes are also loaded once when chat first provides the channel ID, then kept in memory for the running session. Their public CDN images are only used for rendering; no emote data is stored in the project.
+## Setup on Windows (untested)
 
-Each message has its own short-lived combo record. When a repeat reaches `MIN_COMBO_COUNT`, the server sends an event to the overlay; the newest event is the one shown. Expired records are removed automatically.
+The application uses standard Node.js and OBS features, but this exact workflow has not been tested on Windows.
 
-Customize the visual palette, fonts, sizes, and placement through the CSS variables at the top of `overlay.html`. Edit `intensityFor()` there to change the x5, x10, x25, and x50 milestone effects.
+1. Install Node.js 18 or newer and OBS Studio.
+2. Open PowerShell or Command Prompt in the project folder.
+3. Make a copy of `.env.example` named `.env`, then edit it and set `TWITCH_CHANNEL`.
+4. Run:
+
+   ```powershell
+   npm install
+   npm start
+   ```
+
+5. Leave the window running. Open `http://localhost:3000/settings.html` in your browser.
+
+If port 3000 is already in use, change `PORT` in `.env`, restart the app, and use that same port everywhere below.
+
+## Configure `.env`
+
+`.env` is private and is ignored by Git. Never commit, paste, or share it if it contains a token.
+
+```dotenv
+# Required: channel name, without the #
+TWITCH_CHANNEL=your_channel_name
+
+# Optional: leave both blank for anonymous read-only chat access
+TWITCH_BOT_USERNAME=
+TWITCH_OAUTH_TOKEN=
+
+# Local server settings
+PORT=3000
+HOST=127.0.0.1
+
+# Defaults used until the Control Room saves its own choices
+COMBO_TIMEOUT_MS=6500
+MIN_COMBO_COUNT=2
+```
+
+`HOST=127.0.0.1` keeps the app accessible only from this computer, which is the recommended setting for a local OBS setup.
+
+## Control Room and browser preview
+
+With `npm start` still running:
+
+1. Open `http://localhost:3000/settings.html` in a normal browser.
+2. Select a theme: **Game**, **Sakura**, **Rainfall**, **Inferno**, or **Luna**.
+3. Adjust **Combo timeout** and **Show starting at** as desired. The chosen values save locally in `settings.json` and take effect right away.
+4. To see a scripted animation without waiting for chat, open `http://localhost:3000/overlay.html?preview=1`.
+
+The preview cycles a sample `GG` combo from x2 through x15, pauses, then plays the selected theme's exit animation. Remove `?preview=1` before going live; the normal overlay URL only reacts to real chat events.
+
+## Add it to OBS
+
+1. In OBS, add a **Browser** source to the scene.
+2. Set its URL to:
+
+   ```text
+   http://localhost:3000/overlay.html
+   ```
+
+3. Set the Browser source width and height to match the scene or canvas, for example `1920` by `1080`.
+4. Place the source above the game, camera, or background sources.
+5. Use **Refresh** in the Browser source properties after restarting the Node server if OBS does not reconnect automatically.
+
+The page background is transparent. OBS and this application must run on the same computer when using the default private `127.0.0.1` address.
+
+## Test repeated messages
+
+1. Start the app and leave the OBS Browser source open.
+2. Send the same message in the configured Twitch chat repeatedly, such as `GG`.
+3. Once the message reaches the **Show starting at** count, it appears on the overlay and increments with each matching repeat.
+4. Wait longer than the configured timeout, then repeat the message again to begin a new chain.
+
+Matching ignores outer whitespace and letter case: `GG`, `gg`, and ` gg ` belong to the same chain. Punctuation still matters, so `GG!` is separate from `GG`. The newest qualifying combo is the one displayed.
+
+## Optional bot OAuth
+
+Anonymous read-only access works for most viewing-only setups. To connect as a bot, set both `TWITCH_BOT_USERNAME` and `TWITCH_OAUTH_TOKEN` in `.env`. Twitch chat OAuth values are conventionally written with the `oauth:` prefix.
+
+Use a dedicated, read-only bot account when possible. Treat its token like a password: keep it only in `.env`, do not put it in screenshots, logs, Git commits, or OBS source URLs, and regenerate it immediately if exposed. The project does not need a bot token unless you explicitly want an authenticated connection.
+
+## Troubleshooting
+
+| Problem | What to check |
+| --- | --- |
+| The Control Room or overlay will not open | Confirm `npm start` is still running, then visit `http://localhost:3000/settings.html`. If it reports a busy port, choose a different `PORT` in `.env` and restart. |
+| The overlay is blank in OBS | Make sure the Browser source URL is `http://localhost:3000/overlay.html` without `?preview=1`, and click **Refresh** after starting or restarting the app. |
+| The preview works but chat does not | Check `TWITCH_CHANNEL` spelling in `.env` (no `#`) and restart after editing the file. Watch the running app window for its Twitch connection message. |
+| Repeats do not appear | Send exactly the same message repeatedly and make sure it reaches the Control Room's starting count before the timeout expires. |
+| A theme or tuning change seems ignored | Reload the Control Room and Browser source. Local choices are stored in `settings.json`; deleting that local file resets them to the `.env` defaults. |
+| OBS is on a different computer | The default `HOST=127.0.0.1` intentionally prevents network access. Run OBS and the app together, or make a deliberate, security-reviewed network configuration change. |
+
+## How it behaves
+
+- Native Twitch emotes and BetterTTV, 7TV, and FrankerFaceZ emotes can render in matching messages.
+- Every message has its own short-lived repeat chain; expired chains are cleared automatically.
+- The visual palette, type, sizing, placement, and milestone effects live in `overlay.html` if you want to customize the design.
+- The app keeps the local Control Room, overlay, WebSocket, and chat events private by binding to `127.0.0.1` by default.
 
 ## Development note
 
-This project was built with the help of AI-assisted tools and is shared as an experimental, “vibecoded” project. Please review the code before using it in your own setup, and feel free to fork, adapt, or ignore it as you prefer.
-
-## Security notes
-
-The app binds to `127.0.0.1` by default, so the overlay, Control Room, and WebSocket are not reachable from other devices on the network. It accepts WebSocket connections only from local browser-source origins when an origin is supplied. Anonymous Twitch chat access is supported and is the safest default; if you use a bot OAuth token, use a dedicated read-only bot account, keep the token in `.env`, and never commit or share that file.
+This is an experimental, AI-assisted project. Review the code before using or adapting it for your own stream.

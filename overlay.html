@@ -114,6 +114,9 @@
     .theme-fx .fire-ember { display: none; }
     :root[data-theme="inferno"] .theme-fx .fire-ember { display: block; width: var(--size); height: var(--size); top: var(--y); left: var(--x); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fffde2 0 15%, #ffd650 30%, #ff7029 66%, #b51d0d 100%); box-shadow: 0 0 9px #ffd052, 0 0 22px rgba(255,65,20,.9); animation: ember-fall var(--duration) var(--delay) linear infinite; }
     :root[data-theme="inferno"] .theme-fx .fire-ember::after { content: ''; position: absolute; z-index: -1; width: max(3px, calc(var(--size) * .34)); height: var(--trail, 24px); left: 50%; bottom: calc(100% - 3px); transform: translateX(-50%) rotate(var(--tilt, 0deg)); transform-origin: bottom; border-radius: 99px; background: linear-gradient(to top, rgba(255,112,35,.9), rgba(255,80,20,0)); filter: blur(.4px); }
+    .theme-fx .fireball { display: none; }
+    :root[data-theme="inferno"] .theme-fx .fireball { display: block; width: var(--size); height: var(--size); top: var(--y); left: var(--x); border-radius: 50%; background: radial-gradient(circle at 34% 29%, #fffde7 0 10%, #ffd64e 18%, #ff8a25 44%, #ed351b 69%, #7a1009 100%); box-shadow: 0 0 16px #ffd054, 0 0 38px #ff4b1e, 0 0 70px rgba(255,48,16,.75); animation: fireball-fall var(--duration) var(--delay) cubic-bezier(.22,.65,.48,1) infinite; }
+    :root[data-theme="inferno"] .theme-fx .fireball::after { content: ''; position: absolute; z-index: -1; width: calc(var(--size) * .38); height: var(--trail); left: 50%; bottom: calc(100% - 5px); transform: translateX(-50%) rotate(var(--tilt)); transform-origin: bottom; border-radius: 99px; background: linear-gradient(to top, #ff8b27, rgba(238,48,20,.55) 35%, transparent); filter: blur(2px); }
 
     /* SVG theme art: precise silhouettes stay behind the readable combo UI. */
     .theme-art { display: none; position: absolute; pointer-events: none; overflow: visible; }
@@ -174,7 +177,8 @@
     @keyframes flame-flicker-two { to { scale: .97 1.08; skew: 1.5deg 0; } }
     @keyframes flame-flicker-three { to { scale: 1.03 1.08; skew: -1deg 0; } }
     @keyframes ember-idle { 0% { opacity: 0; translate: 0 0; } 15% { opacity: .9; } 100% { opacity: 0; translate: var(--drift-x) -40px; } }
-    @keyframes ember-fall { 0% { opacity: 0; transform: translate(0, -18px) scale(.6); } 10% { opacity: 1; } 72% { opacity: .85; } 100% { opacity: 0; transform: translate(var(--drift), 420px) scale(.35); } }
+    @keyframes ember-fall { 0% { opacity: 0; transform: translate(0, -18px) scale(.6); } 10% { opacity: 1; } 72% { opacity: .85; } 100% { opacity: 0; transform: translate(var(--fall-x, calc(var(--drift, 0px) - 135px)), 420px) scale(.35); } }
+    @keyframes fireball-fall { 0% { opacity: 0; transform: translate(0, -45px) scale(.35); } 12% { opacity: 1; } 76% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--fall-x), 490px) scale(.68); } }
     @keyframes inferno-burst { 0%,100% { transform: translateX(-50%) scale(1); } 48% { transform: translateX(-50%) translateY(-18px) scale(1.11,1.18); } }
     @keyframes lunar { 50% { transform: translateY(-7px); filter: drop-shadow(0 0 26px #d5d9ff); } }
     @keyframes twinkle { to { transform: scale(2.2); opacity: .35; } }
@@ -433,6 +437,10 @@
       <i class="fire-ember" style="--x:7%;--y:112px;--size:9px;--trail:26px;--tilt:5deg;--duration:4.6s;--delay:-3.7s;--drift:24px"></i>
       <i class="fire-ember" style="--x:47%;--y:104px;--size:12px;--trail:33px;--tilt:-7deg;--duration:3.9s;--delay:-1.9s;--drift:-28px"></i>
       <i class="fire-ember" style="--x:78%;--y:119px;--size:10px;--trail:28px;--tilt:9deg;--duration:4.2s;--delay:-.7s;--drift:30px"></i>
+      <!-- Occasional larger fireballs make the foreground shower unmistakable. -->
+      <i class="fireball" style="--x:88%;--y:-70px;--size:30px;--trail:105px;--tilt:26deg;--fall-x:-255px;--duration:5.8s;--delay:-1.1s"></i>
+      <i class="fireball" style="--x:74%;--y:52px;--size:23px;--trail:82px;--tilt:24deg;--fall-x:-220px;--duration:6.6s;--delay:-4.2s"></i>
+      <i class="fireball" style="--x:101%;--y:130px;--size:27px;--trail:94px;--tilt:27deg;--fall-x:-270px;--duration:6.1s;--delay:-2.8s"></i>
       <i class="wave" style="--left:-8%;--bottom:2%;--width:250px;--height:100px;--duration:2.4s;--delay:-.5s"></i>
       <i class="wave" style="--left:20%;--bottom:-7%;--width:290px;--height:120px;--duration:3.1s;--delay:-1.6s"></i>
       <i class="wave" style="--left:53%;--bottom:4%;--width:225px;--height:92px;--duration:2.7s;--delay:-.9s"></i>

@@ -86,10 +86,11 @@
     .theme-fx .meteor { display: none; }
     :root[data-theme="luna"] .theme-fx .meteor { display: block; width: calc(var(--length) * 1.35); height: 5px; top: var(--y); left: var(--x); border-radius: 99px; background: linear-gradient(90deg, transparent, #6f86ff 28%, #bdc8ff 55%, #fff 82%, transparent); box-shadow: 0 0 12px #d4dcff, 0 0 28px #7687ff; animation: meteor-shower var(--duration) var(--delay) linear infinite; }
 
-    /* Tsunami: a rounded waterline panel with bright curling waves. */
+    /* Tsunami: a calm, rounded water-glass card. The wave is tucked into it,
+       rather than becoming a second, disconnected piece below the counter. */
     :root[data-theme="tsunami"] .theme-fx { opacity: 1; }
     :root[data-theme="tsunami"] .theme-fx { z-index: 2; }
-    :root[data-theme="tsunami"] .combo-card { border-radius: 40px 40px 22px 22px; clip-path: polygon(0 13%, 5% 3%, 14% 10%, 25% 0, 37% 8%, 49% 2%, 61% 10%, 75% 0, 88% 8%, 100% 3%, 100% 100%, 0 100%); background: linear-gradient(180deg, #b9f7ff 0%, #43d9fa 46%, #096fcb 100%); border: 4px solid #edffff; border-bottom: 8px solid #0752a4; box-shadow: 0 12px 0 #043d78, 0 0 28px #42e7ff; }
+    :root[data-theme="tsunami"] .combo-card { border-radius: 34px; clip-path: none; background: linear-gradient(180deg, #b9f7ff 0%, #43d9fa 46%, #096fcb 100%); border: 4px solid #edffff; border-bottom: 8px solid #0752a4; box-shadow: 0 12px 0 #043d78, 0 0 28px #42e7ff; }
     :root[data-theme="tsunami"] #message { color: #083e7a; -webkit-text-stroke: 3px white; text-shadow: 3px 4px 0 #79ecff; }
     :root[data-theme="tsunami"] .label { color: #053b71; background: #d8fbff; border-color: #087cd0; box-shadow: 3px 3px 0 #0752a4; }
     :root[data-theme="tsunami"] .message-wrap { border-color: rgba(5,81,164,.28); }
@@ -99,10 +100,10 @@
     :root[data-theme="tsunami"] .theme-fx .fx-a, :root[data-theme="tsunami"] .theme-fx .fx-b { display: none; }
     :root[data-theme="tsunami"] .theme-fx .wave { display: block; width: var(--width); height: var(--height); bottom: var(--bottom); left: var(--left); border: 8px solid #e7ffff; border-color: #e7ffff transparent transparent #e7ffff; border-radius: 72% 0 0; filter: drop-shadow(0 0 7px #24cfff); animation: wave-roll var(--duration) var(--delay) ease-in-out infinite; }
 
-    /* Inferno: jagged heat shards rising behind a charred red panel. */
+    /* Inferno: a clean ember-lit card with one layered flame bed behind it. */
     :root[data-theme="inferno"] .theme-fx { opacity: 1; }
     :root[data-theme="inferno"] .theme-fx { z-index: 2; }
-    :root[data-theme="inferno"] .combo-card { clip-path: polygon(0 8%, 8% 0, 19% 7%, 30% 0, 43% 6%, 58% 0, 72% 8%, 85% 0, 100% 6%, 100% 100%, 0 100%); background: radial-gradient(circle at 50% -20%, #ffdd52, #ff6a24 39%, #9f151d 73%, #30080c 100%); border: 3px solid #ffcc42; border-bottom: 9px solid #59100e; box-shadow: 0 13px 0 #260609, 0 0 32px #ff592a; }
+    :root[data-theme="inferno"] .combo-card { border-radius: 30px; clip-path: none; background: radial-gradient(circle at 50% -20%, #ffdd52, #ff6a24 39%, #9f151d 73%, #30080c 100%); border: 3px solid #ffcc42; border-bottom: 9px solid #59100e; box-shadow: 0 13px 0 #260609, 0 0 32px #ff592a; }
     :root[data-theme="inferno"] #message { color: #fff5ca; -webkit-text-stroke: 3px #6e1010; text-shadow: 3px 4px 0 #3a0909; }
     :root[data-theme="inferno"] .label { color: #fff6c4; background: #9e1419; border-color: #ffcd3e; box-shadow: 3px 3px 0 #390707; }
     :root[data-theme="inferno"] .message-wrap { border-color: rgba(255,234,130,.35); }
@@ -119,14 +120,14 @@
     :root[data-theme="inferno"] .combo-card { background: radial-gradient(circle at 50% -20%, rgba(255,221,82,.86), rgba(255,106,36,.76) 39%, rgba(159,21,29,.84) 73%, rgba(48,8,12,.9) 100%); }
     :root[data-theme="tsunami"] .wave, :root[data-theme="inferno"] .flame { display: none !important; }
 
-    :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(960px, 130%); height: 300px; left: 50%; bottom: -105px; transform: translateX(-50%); filter: drop-shadow(0 0 14px rgba(38,211,255,.52)); }
+    :root[data-theme="tsunami"] .tsunami-art { display: block; width: min(650px, 108%); height: 165px; left: 50%; bottom: 26px; transform: translateX(-50%); filter: drop-shadow(0 5px 9px rgba(8,91,145,.34)); }
     :root[data-theme="tsunami"] .wave-group { transform-box: fill-box; transform-origin: 50% 100%; animation: wave-idle 2.3s ease-in-out infinite; }
     :root[data-theme="tsunami"] .wave-body { fill: url(#water-gradient); }
     :root[data-theme="tsunami"] .wave-lip { fill: none; stroke: #f2ffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .96; }
     :root[data-theme="tsunami"] .foam-dot { fill: #f5ffff; animation: foam-breathe 2.3s ease-in-out infinite; animation-delay: var(--delay); }
     :root[data-theme="tsunami"] #combo.theme-burst .tsunami-art { animation: tsunami-burst 700ms ease-in-out both; filter: drop-shadow(0 0 28px rgba(55,216,255,.95)); }
 
-    :root[data-theme="inferno"] .inferno-art { display: block; width: min(900px, 123%); height: 290px; left: 50%; bottom: -98px; transform: translateX(-50%); filter: drop-shadow(0 0 16px rgba(255,79,25,.58)); }
+    :root[data-theme="inferno"] .inferno-art { display: block; width: min(600px, 104%); height: 172px; left: 50%; bottom: 26px; transform: translateX(-50%); filter: drop-shadow(0 5px 10px rgba(123,20,8,.42)); }
     :root[data-theme="inferno"] .flame-unit { transform-box: fill-box; transform-origin: 50% 100%; }
     :root[data-theme="inferno"] .flame-one { animation: flame-flicker-one 1.1s -.2s ease-in-out infinite alternate; }
     :root[data-theme="inferno"] .flame-two { animation: flame-flicker-two 1.4s -.8s ease-in-out infinite alternate; }
@@ -365,11 +366,11 @@
           </linearGradient>
         </defs>
         <g class="wave-group">
-          <!-- Three gentle crest humps, ending in a small curling lip. -->
-          <path class="wave-body" d="M0 320 L0 238 C72 208 115 250 186 222 C253 196 296 229 360 194 C427 158 476 211 543 169 C593 137 611 89 580 62 C551 37 510 52 507 84 C505 105 523 115 540 105 C532 132 505 145 480 133 C448 118 433 83 451 53 C489 -7 579 -6 634 39 C689 84 691 156 652 207 C607 267 553 271 486 267 C399 262 337 282 258 275 C169 267 88 277 0 320 Z"/>
-          <path class="wave-lip" d="M0 238 C72 208 115 250 186 222 C253 196 296 229 360 194 C427 158 476 211 543 169 C593 137 611 89 580 62 C551 37 510 52 507 84 C505 105 523 115 540 105"/>
+          <!-- A low, continuous crest: visually part of the card, not a second badge. -->
+          <path class="wave-body" d="M0 320 L0 221 C86 205 144 231 222 207 C293 185 352 214 419 190 C479 169 532 179 574 157 C605 140 618 111 596 94 C576 79 547 90 548 112 C549 127 562 134 575 128 C565 150 539 158 519 146 C495 132 490 102 507 80 C536 43 596 43 633 75 C678 114 663 171 622 202 C577 236 526 232 460 241 C369 253 303 239 224 255 C139 272 70 264 0 287 Z"/>
+          <path class="wave-lip" d="M0 221 C86 205 144 231 222 207 C293 185 352 214 419 190 C479 169 532 179 574 157 C605 140 618 111 596 94 C576 79 547 90 548 112 C549 127 562 134 575 128"/>
           <g>
-            <circle class="foam-dot" cx="70" cy="228" r="3" style="--delay:-.1s"/><circle class="foam-dot" cx="108" cy="236" r="4" style="--delay:-.5s"/><circle class="foam-dot" cx="150" cy="224" r="3.5" style="--delay:-1s"/><circle class="foam-dot" cx="210" cy="213" r="5" style="--delay:-.25s"/><circle class="foam-dot" cx="259" cy="205" r="3" style="--delay:-.8s"/><circle class="foam-dot" cx="317" cy="208" r="4" style="--delay:-1.3s"/><circle class="foam-dot" cx="374" cy="184" r="5" style="--delay:-.4s"/><circle class="foam-dot" cx="420" cy="176" r="3.5" style="--delay:-1.1s"/><circle class="foam-dot" cx="476" cy="192" r="4" style="--delay:-.65s"/><circle class="foam-dot" cx="530" cy="171" r="3" style="--delay:-1.5s"/><circle class="foam-dot" cx="577" cy="138" r="5" style="--delay:-.2s"/><circle class="foam-dot" cx="600" cy="104" r="3.5" style="--delay:-.95s"/>
+            <circle class="foam-dot" cx="76" cy="216" r="3" style="--delay:-.1s"/><circle class="foam-dot" cx="126" cy="222" r="4" style="--delay:-.5s"/><circle class="foam-dot" cx="177" cy="216" r="3.5" style="--delay:-1s"/><circle class="foam-dot" cx="230" cy="200" r="4.5" style="--delay:-.25s"/><circle class="foam-dot" cx="287" cy="192" r="3" style="--delay:-.8s"/><circle class="foam-dot" cx="350" cy="203" r="4" style="--delay:-1.3s"/><circle class="foam-dot" cx="421" cy="180" r="4.5" style="--delay:-.4s"/><circle class="foam-dot" cx="485" cy="171" r="3.5" style="--delay:-1.1s"/><circle class="foam-dot" cx="544" cy="171" r="4" style="--delay:-.65s"/><circle class="foam-dot" cx="589" cy="143" r="3" style="--delay:-1.5s"/>
           </g>
         </g>
       </svg>
@@ -377,10 +378,10 @@
         <defs>
           <linearGradient id="flame-gradient" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8a1c0e"/><stop offset=".36" stop-color="#ff5a1f"/><stop offset=".7" stop-color="#ffb020"/><stop offset="1" stop-color="#fff3b0"/></linearGradient>
         </defs>
-        <!-- Three separate, asymmetric curved flame tongues. -->
-        <g class="flame-unit flame-one"><path class="flame-shape" d="M118 320 C97 270 122 238 144 206 C166 174 145 147 158 103 C185 137 207 171 195 215 C218 185 236 153 229 115 C267 157 284 211 259 253 C286 232 304 205 305 173 C339 220 337 278 315 320 Z"/></g>
-        <g class="flame-unit flame-two"><path class="flame-shape" d="M361 320 C337 254 380 224 398 177 C418 126 391 103 414 53 C426 116 464 144 448 197 C479 161 502 126 494 83 C538 137 551 201 522 247 C557 215 580 177 579 132 C624 191 632 267 599 320 Z"/></g>
-        <g class="flame-unit flame-three"><path class="flame-shape" d="M638 320 C621 267 655 233 673 194 C693 151 671 123 689 79 C705 135 738 158 725 205 C751 176 772 144 768 107 C807 157 817 210 793 252 C822 225 844 192 847 151 C880 207 879 272 856 320 Z"/></g>
+        <!-- Overlapping tongues make one compact hearth, instead of three stickers. -->
+        <g class="flame-unit flame-one"><path class="flame-shape" d="M230 320 C210 271 242 235 267 198 C286 170 267 139 286 100 C316 137 327 174 312 214 C340 186 351 150 345 122 C385 165 393 220 366 260 C392 239 410 209 409 178 C446 225 438 279 419 320 Z"/></g>
+        <g class="flame-unit flame-two"><path class="flame-shape" d="M338 320 C316 250 360 217 382 164 C403 113 381 85 410 37 C423 103 458 135 446 184 C476 150 497 111 492 72 C539 127 550 194 520 244 C553 212 576 168 571 124 C622 186 627 265 590 320 Z"/></g>
+        <g class="flame-unit flame-three"><path class="flame-shape" d="M492 320 C475 269 507 231 529 190 C549 151 531 119 552 83 C574 124 579 159 564 199 C590 174 610 140 605 107 C647 154 659 211 634 252 C664 224 682 189 681 152 C721 207 713 272 694 320 Z"/></g>
         <g class="ember">
           <circle cx="200" cy="103" r="2.3" style="--delay:-.3s;--drift-x:-12px"/><circle cx="275" cy="157" r="2" style="--delay:-1.5s;--drift-x:14px"/><circle cx="462" cy="48" r="2.5" style="--delay:-.9s;--drift-x:10px"/><circle cx="551" cy="129" r="2.1" style="--delay:-2s;--drift-x:-15px"/><circle cx="708" cy="72" r="2.4" style="--delay:-.6s;--drift-x:13px"/><circle cx="791" cy="144" r="2" style="--delay:-1.7s;--drift-x:-10px"/>
         </g>

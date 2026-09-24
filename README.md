@@ -10,11 +10,27 @@ Choose a theme, combo timeout, and the repeat count that should first appear on-
 
 ![Control Room with Sakura selected](media/control-room-preview.png)
 
-### Sakura overlay preview
+### Theme previews
 
-The overlay itself has a transparent background, so it can sit on top of your stream scene.
+The overlay has a transparent background, so it can sit on top of your stream scene. These live captures show the current combo and exit effects.
 
-![Sakura chat combo overlay](media/sakura-overlay-preview.png)
+#### Game
+
+![Game theme animation](media/game-theme-preview.gif)
+
+#### Sakura
+
+![Sakura theme animation](media/sakura-theme-preview.gif)
+
+#### Rainfall
+
+![Rainfall theme animation](media/rainfall-theme-preview.gif)
+
+#### Inferno
+
+![Inferno theme animation](media/inferno-theme-preview.gif)
+
+Luna and Blizzard previews will be added when their recordings are available.
 
 ### In OBS
 

@@ -26,12 +26,18 @@
     .inferno { --theme: #ff8a39; background: radial-gradient(circle at 52% -18%, #a14528 0%, #43161b 50%, #16090d 100%); border-bottom: 5px solid #ff7138; box-shadow: inset 0 1px 0 rgba(255,193,105,.2); }
     .luna { --theme: #d9dcff; background: linear-gradient(145deg, #57528f, #171833 65%); border-bottom: 5px solid var(--theme); }
     .blizzard { --theme: #e9f8ff; background: radial-gradient(circle at 25% 12%, #c9ecff 0%, transparent 27%), linear-gradient(145deg, #477d9d, #102b49 65%); border-bottom: 5px solid var(--theme); box-shadow: inset 0 1px 0 rgba(255,255,255,.42); }
+    .palette { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) auto; gap: 12px; align-items: end; padding: 20px; border: 1px solid #303650; border-radius: 18px; background: rgba(21,24,39,.72); }
+    .palette label { display: grid; gap: 7px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .palette input { width: 100%; height: 42px; padding: 3px; border: 1px solid #4b5579; border-radius: 9px; background: #0d1020; cursor: pointer; }
+    .palette button { height: 42px; padding: 0 14px; border: 1px solid #526088; border-radius: 9px; background: #242a42; color: var(--text); cursor: pointer; font: inherit; font-weight: 700; white-space: nowrap; }
+    .palette button:hover { background: #303958; }
     .rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 22px; border: 1px solid #303650; border-radius: 18px; background: rgba(21,24,39,.72); }
     .rule { display: grid; gap: 9px; }
     .rule-label { display: flex; justify-content: space-between; gap: 12px; font-weight: 700; }
     output { color: #73e2ff; font-variant-numeric: tabular-nums; }
     input[type="range"] { width: 100%; accent-color: #55ddff; }
     .rule small { color: var(--muted); }
+    @media (max-width: 800px) { .palette { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     @media (max-width: 700px) { .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rules { grid-template-columns: 1fr; } }
     @media (max-width: 430px) { .themes { grid-template-columns: 1fr; } }
     .footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-top: 46px; padding-top: 24px; border-top: 1px solid #292d40; color: var(--muted); }
@@ -54,6 +60,16 @@
       <button class="theme inferno" data-theme="inferno" aria-pressed="false"><strong>Inferno</strong><span>Fire comets · ember-lit frame</span></button>
       <button class="theme luna" data-theme="luna" aria-pressed="false"><strong>Luna</strong><span>Crescent moon · orbiting stars</span></button>
       <button class="theme blizzard" data-theme="blizzard" aria-pressed="false"><strong>Blizzard</strong><span>Falling snow · frosted frame</span></button>
+    </section>
+
+    <h2>Theme colors</h2>
+    <section class="palette" aria-label="Selected theme color palette">
+      <label>Accent <input id="palette-accent" data-palette-key="accent" type="color" value="#ffd23f"></label>
+      <label>Highlight <input id="palette-hot-accent" data-palette-key="hotAccent" type="color" value="#ff4d6d"></label>
+      <label>Panel / glass <input id="palette-panel" data-palette-key="panel" type="color" value="#10111a"></label>
+      <label>Edge <input id="palette-edge" data-palette-key="edge" type="color" value="#ffffff"></label>
+      <label>Text <input id="palette-ink" data-palette-key="ink" type="color" value="#10111a"></label>
+      <button id="reset-palette" type="button">Reset theme</button>
     </section>
 
     <h2>Combo behavior</h2>
@@ -80,9 +96,19 @@
     const saved = document.querySelector('#saved');
     const timeout = document.querySelector('#combo-timeout');
     const minimum = document.querySelector('#minimum-count');
+    const paletteInputs = [...document.querySelectorAll('[data-palette-key]')];
+    const resetPalette = document.querySelector('#reset-palette');
     const timeoutValue = document.querySelector('#timeout-value');
     const minimumValue = document.querySelector('#minimum-value');
-    let currentSettings = { theme: 'game', comboTimeoutMs: 6500, minComboCount: 2 };
+    const paletteDefaults = {
+      game: { accent: '#ffd23f', hotAccent: '#ff4d6d', panel: '#10111a', edge: '#ffffff', ink: '#10111a' },
+      sakura: { accent: '#ff82bd', hotAccent: '#ff3b8d', panel: '#310d2b', edge: '#ffd0ec', ink: '#250d24' },
+      rainfall: { accent: '#92d9ff', hotAccent: '#568cff', panel: '#0a172d', edge: '#c4e7ff', ink: '#071426' },
+      inferno: { accent: '#ff9a34', hotAccent: '#ff304f', panel: '#360d0c', edge: '#ffd387', ink: '#250809' },
+      luna: { accent: '#d9dcff', hotAccent: '#ae8cff', panel: '#111333', edge: '#e6eaff', ink: '#0c0d28' },
+      blizzard: { accent: '#e7f8ff', hotAccent: '#78ccff', panel: '#0e3450', edge: '#e4f9ff', ink: '#061e34' }
+    };
+    let currentSettings = { theme: 'game', comboTimeoutMs: 6500, minComboCount: 2, themePalettes: {} };
 
     function select(theme) {
       cards.forEach(card => {
@@ -92,12 +118,14 @@
       });
     }
     function render(settings) {
-      currentSettings = settings;
+      currentSettings = { ...settings, themePalettes: settings.themePalettes || {} };
       select(settings.theme);
       timeout.value = settings.comboTimeoutMs;
       minimum.value = settings.minComboCount;
       timeoutValue.value = `${(settings.comboTimeoutMs / 1000).toFixed(settings.comboTimeoutMs % 1000 ? 1 : 0)} seconds`;
       minimumValue.value = `x${settings.minComboCount}`;
+      const palette = { ...paletteDefaults[settings.theme], ...(currentSettings.themePalettes[settings.theme] || {}) };
+      paletteInputs.forEach(input => input.value = palette[input.dataset.paletteKey]);
     }
     async function save(next) {
       const response = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
@@ -107,6 +135,15 @@
       setTimeout(() => saved.classList.remove('visible'), 2200);
     }
     cards.forEach(card => card.addEventListener('click', () => save({ ...currentSettings, theme: card.dataset.theme }).catch(error => alert(error.message))));
+    paletteInputs.forEach(input => input.addEventListener('change', () => {
+      const theme = currentSettings.theme;
+      const palette = { ...paletteDefaults[theme], ...(currentSettings.themePalettes[theme] || {}), [input.dataset.paletteKey]: input.value };
+      save({ ...currentSettings, themePalettes: { ...currentSettings.themePalettes, [theme]: palette } }).catch(error => alert(error.message));
+    }));
+    resetPalette.addEventListener('click', () => {
+      const { [currentSettings.theme]: removed, ...themePalettes } = currentSettings.themePalettes;
+      save({ ...currentSettings, themePalettes }).catch(error => alert(error.message));
+    });
     timeout.addEventListener('input', () => timeoutValue.value = `${(timeout.value / 1000).toFixed(timeout.value % 1000 ? 1 : 0)} seconds`);
     minimum.addEventListener('input', () => minimumValue.value = `x${minimum.value}`);
     timeout.addEventListener('change', () => save({ ...currentSettings, comboTimeoutMs: Number(timeout.value) }).catch(error => alert(error.message)));

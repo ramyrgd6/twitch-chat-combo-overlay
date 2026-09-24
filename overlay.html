@@ -148,6 +148,14 @@
     :root[data-theme="blizzard"] .theme-fx .snowflake { display: block; top: var(--y); left: var(--x); color: var(--snow-color, #fff); font-family: Georgia, serif; font-size: var(--size); line-height: 1; text-shadow: 0 0 7px rgba(211,245,255,.95), 0 0 18px rgba(125,207,255,.72); animation: snow-fall var(--duration) var(--delay) linear infinite; }
     :root[data-theme="blizzard"] .theme-fx .snowflake::before { content: '❄'; }
 
+    /* A saved Control Room palette keeps each theme's motion while recoloring
+       the card, label, and text as one cohesive glass treatment. */
+    :root.custom-palette .combo-card { background: linear-gradient(128deg, color-mix(in srgb, var(--user-accent) 42%, transparent), color-mix(in srgb, var(--user-panel) 78%, transparent)) !important; border-color: var(--user-edge, var(--panel-edge)) !important; border-bottom-color: color-mix(in srgb, var(--user-accent) 60%, var(--user-panel)) !important; box-shadow: 0 13px 0 color-mix(in srgb, var(--user-panel) 68%, #000), inset 0 2px 0 color-mix(in srgb, var(--user-edge) 45%, transparent), inset 0 -18px 30px color-mix(in srgb, var(--user-panel) 48%, #000), 0 0 34px color-mix(in srgb, var(--user-accent) 62%, transparent) !important; }
+    :root.custom-palette .combo-card::after { background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--user-edge) 70%, transparent), transparent) !important; box-shadow: none !important; }
+    :root.custom-palette #message { color: var(--user-edge, #fff) !important; -webkit-text-stroke-color: var(--user-ink, var(--ink)) !important; text-shadow: 3px 4px 0 var(--user-ink, var(--ink)), 0 0 14px color-mix(in srgb, var(--user-accent) 45%, transparent) !important; }
+    :root.custom-palette .label { color: var(--user-ink, var(--ink)) !important; background: color-mix(in srgb, var(--user-edge) 72%, var(--user-panel)) !important; border-color: var(--user-edge, #fff) !important; box-shadow: 3px 3px 0 color-mix(in srgb, var(--user-panel) 72%, #000) !important; }
+    :root.custom-palette .message-wrap { border-color: color-mix(in srgb, var(--user-edge) 32%, transparent) !important; background: color-mix(in srgb, var(--user-panel) 20%, transparent) !important; }
+
 
     @keyframes petals { 0% { transform: translate(0,0) rotate(-32deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(-70px,190px) rotate(130deg); opacity: 0; } }
     @keyframes sakura-rain { 0% { opacity: 0; transform: translate(0, 0) rotate(0deg); } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), 410px) rotate(var(--spin)); } }
@@ -487,9 +495,19 @@
     };
     let currentTheme = 'game';
 
-    function applyTheme(theme) {
+    function applyTheme(theme, themePalettes = {}) {
       currentTheme = validThemes.has(theme) ? theme : 'game';
       document.documentElement.dataset.theme = currentTheme;
+      const palette = themePalettes[currentTheme];
+      document.documentElement.classList.toggle('custom-palette', Boolean(palette && Object.keys(palette).length));
+      ['accent', 'hotAccent', 'panel', 'edge', 'ink'].forEach(key => {
+        document.documentElement.style.removeProperty(`--user-${key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)}`);
+      });
+      if (palette) {
+        Object.entries(palette).forEach(([key, color]) => {
+          document.documentElement.style.setProperty(`--user-${key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)}`, color);
+        });
+      }
       combo.style.setProperty('--combo-color', colorRamps[currentTheme][0]);
       combo.style.setProperty('--count-color', colorRamps[currentTheme][0]);
     }
@@ -622,13 +640,13 @@
       socket.addEventListener('message', ({ data }) => {
         const event = JSON.parse(data);
         if (event.type === 'combo') showCombo(event);
-        if (event.type === 'settings') applyTheme(event.settings.theme);
+        if (event.type === 'settings') applyTheme(event.settings.theme, event.settings.themePalettes);
       });
       socket.addEventListener('close', () => setTimeout(connect, 2000));
       socket.addEventListener('error', () => socket.close());
     }
     connect();
-    fetch('/api/settings').then(response => response.json()).then(settings => applyTheme(settings.theme)).catch(() => {});
+    fetch('/api/settings').then(response => response.json()).then(settings => applyTheme(settings.theme, settings.themePalettes)).catch(() => {});
 
     // Add ?preview=1 to the browser-source URL to verify the visual design
     // without sending chat messages. Remove it when you are ready to go live.

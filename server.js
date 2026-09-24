@@ -18,7 +18,8 @@ const THEMES = new Set(['game', 'sakura', 'rainfall', 'inferno', 'luna', 'blizza
 const DEFAULT_SETTINGS = {
   theme: 'game',
   comboTimeoutMs: DEFAULT_COMBO_TIMEOUT_MS,
-  minComboCount: DEFAULT_MIN_COMBO_COUNT
+  minComboCount: DEFAULT_MIN_COMBO_COUNT,
+  themePalettes: {}
 };
 let overlaySettings = loadSettings();
 
@@ -93,7 +94,8 @@ function loadSettings() {
     return {
       theme: THEMES.has(theme) ? theme : DEFAULT_SETTINGS.theme,
       comboTimeoutMs: integerSettingFrom(saved.comboTimeoutMs, DEFAULT_SETTINGS.comboTimeoutMs, 1000, 60000),
-      minComboCount: integerSettingFrom(saved.minComboCount, DEFAULT_SETTINGS.minComboCount, 2, 999)
+      minComboCount: integerSettingFrom(saved.minComboCount, DEFAULT_SETTINGS.minComboCount, 2, 999),
+      themePalettes: normalizeThemePalettes(saved.themePalettes) || {}
     };
   } catch {
     return { ...DEFAULT_SETTINGS };
@@ -116,7 +118,10 @@ function updateSettings(request, response) {
         return sendJson(response, 400, { error: 'Timeout must be 1–60 seconds and minimum count must be 2–999' });
       }
 
-      overlaySettings = { theme: next.theme, comboTimeoutMs, minComboCount };
+      const themePalettes = normalizeThemePalettes(next.themePalettes);
+      if (!themePalettes) return sendJson(response, 400, { error: 'Theme colors must be valid hex values' });
+
+      overlaySettings = { theme: next.theme, comboTimeoutMs, minComboCount, themePalettes };
       fs.writeFileSync(SETTINGS_FILE, `${JSON.stringify(overlaySettings, null, 2)}\n`);
       broadcast({ type: 'settings', settings: overlaySettings });
       sendJson(response, 200, overlaySettings);
@@ -124,6 +129,23 @@ function updateSettings(request, response) {
       sendJson(response, 400, { error: 'Settings must be valid JSON' });
     }
   });
+}
+
+function normalizeThemePalettes(value) {
+  if (value === undefined) return {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const paletteKeys = new Set(['accent', 'hotAccent', 'panel', 'edge', 'ink']);
+  const normalized = {};
+  for (const [theme, palette] of Object.entries(value)) {
+    if (!THEMES.has(theme) || !palette || typeof palette !== 'object' || Array.isArray(palette)) return null;
+    const next = {};
+    for (const [key, color] of Object.entries(palette)) {
+      if (!paletteKeys.has(key) || typeof color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(color)) return null;
+      next[key] = color.toLowerCase();
+    }
+    if (Object.keys(next).length) normalized[theme] = next;
+  }
+  return normalized;
 }
 
 function sendJson(response, status, data) {
